@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+name1:
+<name li-xing="u" ></name>
+
+
+
+</body>
+<script src="../assets/angular/angular.min.js"></script>
+<script>
+
+    var app = angular.module('app',[]);
+
+    app.directive('name', function () {
+        return {
+            restrict:"E",
+            replace:true,
+            template:"<div ng-mouseenter='showdata()'><ul>" +
+            "<li ng-repeat='u in liXing'>" +
+            "<div ng-repeat='k in u' >{{k}}</div>"+
+            "</li></ul></div>",
+            scope:{
+                liXing:"=",
+                aaa:"@",
+                systemout:"&",
+                name:"="
+            },
+            link: function (scope, elem, attr) {
+
+                scope.showdata = function(){
+                    console.log(scope.liXing);
+                    for( u in scope.liXing){
+                        console.log(JSON.stringify(scope.liXing[u]));
+                        for( k in scope.liXing[u]){
+                            console.log(k);
+                        }
+                    }
+                }
+
+
+
+            }
+        }
+    });
+
+    app.controller('ctrl',['$scope','$http', function ($scope ,$http) {
+        $scope.u = [
+            {id:1,name:"n1"},
+            {id:2,name:"n2"},
+            {id:3,name:"n3"},
+            {id:4,name:"n4"}
+        ];
+//        $http({url:"../data.json",method:"GET"}).success(function (data) {
+//            $scope.u = data;
+//        });
+
+        $scope.abc = 'fdsafdsafdsfdsa';
+
+        $scope.sysout = function(){
+            console.log($scope.abc);
+        }
+
+    }]);
+</script>
+</html>

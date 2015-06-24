@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="assets/angular/angular.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<table>
+    <thead>
+    <th>#</th>
+    <th>姓名</th>
+    <th>*</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="p in persons">
+        <td>{{p.id}}</td>
+        <td>{{p.name}}</td>
+        <td>
+            <a href="" ng-click="showMe(p)">编辑</a>
+            <a href="" ng-click="delMe($index)" >del</a>
+        </td>
+
+    </tr>
+    <tr ng-show="persons.length==0">
+        <td>none</td>
+    </tr>
+    </tbody>
+</table>
+<button ng-click="getPerson()">查询</button>
+<button ng-click="getVersion()">版本</button>
+</body>
+<script>
+    var app = angular.module("app", ['App2']);
+    app.controller('ctrl', ['$scope', '$http', 'getUserService', function ($scope, $http, getUS) {
+
+        $scope.persons = [];
+
+        $scope.getPerson = function () {
+            getUS.getUserList(function (persons) {
+                $scope.persons = persons;
+            });
+        };
+        $scope.delMe = function (idx) {
+            delete $scope.persons.splice(idx , 1 );
+        }
+        $scope.getVersion = function () {
+            console.log(getUS.myVersion);
+        }
+
+        $scope.showMe = function (person) {
+            console.log(JSON.stringify(person));
+        }
+
+    }]);
+
+    var app2 = angular.module("App2", []);
+
+    app2.service("getUserService", ["$http", function ($http) {
+        return {
+            getUser: function (u) {
+                return "abc" + (u || "");
+            },
+            getUserList: function (callback) {
+                var h = $http({
+                    method: "get",
+                    url: "data.json"
+                }).error(function (data, status) {
+                    console.log("error");
+                }).success(function (data, status) {
+                    callback(data);
+                });
+                return h;
+            },
+            myVersion: "1.0"
+        }
+    }]);
+</script>
+</html>

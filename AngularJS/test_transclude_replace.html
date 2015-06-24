@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app">
+<test-directive>
+    <div>456</div>
+</test-directive>
+
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    /**
+     * replace:false,transclude:'element'有冲突，不替换，要整体都被包围在指令内部，同时transclude有要用此指令element。
+     * 产生冲突
+     */
+    angular.module('app',[])
+            .directive('testDirective', function () {
+                return {
+                    restrict:'E',
+                    replace:true,
+                    transclude:true,
+                    template:'<div>123<span ng-transclude></span></div>'
+                }
+            })
+</script>
+</html>

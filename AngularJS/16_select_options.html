@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl" >
+    <select ng-model="u" ng-options="a.id as a.id +'--'+ a.name group by '性别:'+(a.gender==0?'女':'男') for a in users " ></select>
+    <select ng-model="v" ng-options="a for a in arr " ng-change="show()"></select>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module('app',[]);
+
+    app.controller('ctrl', function ($scope, $http){
+
+
+        $http({url:"10_data.json"}).success(function (data) {
+            $scope.users = data;
+            console.log($scope.users);
+        });
+
+        $scope.$watch('u', function (nv, ov, scope) {
+            console.log(angular.toJson(ov)+"--->"+angular.toJson(nv));
+        });
+
+        $scope.show = function ($event) {
+            console.log($scope.v);
+        };
+
+        $scope.arr = ['a','b','c'];
+
+    });
+</script>
+</html>

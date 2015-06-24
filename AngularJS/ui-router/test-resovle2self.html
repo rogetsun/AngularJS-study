@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+<a ui-sref="root" href="">root</a>
+<a ui-sref="root.main" href="">main</a>
+<ui-view></ui-view>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    /***
+     * 测试子state继承父级state的resolve里的data，并完成改写。
+     * 在子state的resolve里写和父级state的resolve里一样名称的data，
+     * 并且把父级data注入到子state的resovle的data的function里，同时完成改写。
+     *
+     * 测试可行。
+     *
+     */
+    angular.module('app', ['ui.router'])
+            .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+                $urlRouterProvider.otherwise('/root');
+                $stateProvider
+                        .state('root', {
+                            url: '/root',
+                            template: '<ui-view></ui-view>',
+                            resolve: {
+                                data: ['$http', function ($http) {
+                                    return {
+                                        title: 'root title',
+                                        name: 'root',
+                                        content: 'root content'
+                                    }
+                                }]
+                            }
+                        })
+                        .state('root.main', {
+                            url: '/main',
+                            template: '<div class="panel panel-warning">' +
+                            '<div class="panel-heading">{{data.name+"----"+data.title}}</div>' +
+                            '<div class="panel-body">{{data.content}}</div>' +
+                            '</div>',
+                            resolve: {
+                                data: ['$state', 'data', function ($state, data) {
+                                    data.title = 'main title';
+                                    data.content = 'main content ';
+                                    console.log($state);
+                                    return data;
+                                }]
+                            },
+                            controller: function ($scope, data) {
+                                $scope.data = data;
+                            }
+                        })
+            }])
+</script>
+</html>

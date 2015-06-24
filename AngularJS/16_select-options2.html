@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+
+<select ng-model="user" ng-options="{x:test, id:u.id, name:u.name} as u.name for u in users"
+        ng-change="show(user)"></select>
+这种办法可以得到值，但是select的显示不正常
+<hr/>
+
+
+<select ng-model="user2" ng-change="show(user2)">
+    <option ng-repeat="u in users" value="{ x:{{test}},id:{{u.id}},name:{{u.name}} }">{{u.name}}</option>
+</select>
+不可行
+<hr/>
+
+<select ng-model="user3" ng-change="show(user3)">
+    <option ng-repeat="u in users" value="{{ {x:test,u:u} }}">{{u.name}}</option>
+</select>
+ok，但是得到的值需要JSON.parse()转换成json对象。
+
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope, $http) {
+                $scope.test = '1111';
+                $http.get('../assets/data.json').then(function (res) {
+                    $scope.users = res.data;
+                })
+
+                $scope.show = function (u) {
+                    console.log(u);
+                    console.log(JSON.parse(u));
+                }
+
+            })
+</script>
+</html>

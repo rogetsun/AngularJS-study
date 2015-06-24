@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+<a href="" ui-sref="page1">page1</a>
+<a href="" ui-sref="page2">page2</a>
+<a href="" ui-sref="page2.page3">page2.page3</a>
+<a href="" ui-sref="page2.page4">page2.page4</a>
+
+<ui-view></ui-view>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    angular.module('app', ['ui.router'])
+            .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+                $stateProvider
+                        .state('root', {
+                            url: '/root',
+                            template: '<div class="panel panel-primary">' +
+                            '<div class="panel-heading">root</div>' +
+                            '<div class="panel-body" ui-view></div>' +
+                            '</div>'
+                        })
+                        .state('page1', {
+                            url: '/page1',
+                            parent: 'root',
+                            template: '<div> resolve: {{title}}, data:{{name}} .</div>',
+                            resolve: {
+                                title: function () {
+                                    return 'page1 title';
+                                }
+                            },
+                            data: {
+                                name: 'page1 name'
+                            },
+                            controller: 'pageCtrl'
+                        })
+                        .state('page2', {
+                            url: '/page2',
+                            parent: 'root',
+                            abstract: true,
+                            template: '<div ui-view=""> resolve: {{title}}, data:{{name}} .</div>'
+                            ,data: {
+                                name: 'page2 name'
+                            },
+                            resolve: {
+                                title: function () {
+                                    return 'page2 title'
+                                }
+                            }
+                        })
+                        .state('page2.page3', {
+                            url: '',
+                            data: {
+                                name: 'page3 name'
+                            },
+                            template: '<div> resolve: {{title}}, data:{{name}} .</div>',
+                            controller: 'pageCtrl'
+                        })
+                        .state('page2.page4', {
+                            url: '',
+
+                            resolve: {
+                                title: function () {
+                                    return 'page4 title'
+                                }
+                            },
+                            template: '<div> resolve: {{title}}, data:{{name}} .</div>',
+                            controller: 'pageCtrl'
+                        });
+            }])
+            .controller('pageCtrl', function ($scope, $state, title) {
+                $scope.title = title;
+                $scope.name = $state.current.data.name;
+            });
+</script>
+</html>

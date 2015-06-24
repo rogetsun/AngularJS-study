@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .run(function ($filter) {
+                var arr = [
+                    {id: 1, name: "name1"}
+                    , {id: 2, name: "name2"}
+                    , {id: 3, name: "name3"}
+                    , {id: 4, name: "name4"}
+                    , {id: 5, name: "name5"}
+                    , {id: 6, name: "name6"}
+                    , {id: 7, name: "name7"}
+                    , {id: 8, name: "name8"}
+                    , {id: 9, name: "name9"}
+                    , {id: 10, name: "name10"}
+                    , {id: 11, name: "name11"}
+                ];
+                angular.forEach(arr , function (v) {
+//                    console.log(JSON.stringify(v));
+                });
+                angular.forEach($filter('filter')(arr, {id:1}), function (v) {
+                    console.log(JSON.stringify(v));
+                });
+            });
+</script>
+</html>

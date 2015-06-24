@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-controller="Ctrl">
+
+<div ng-bind="title"></div>
+
+<accordin >
+    <expender ng-repeat="expend in expends" expend-obj="expend" >
+        {{expend.content}}
+    </expender>
+</accordin>
+
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module("App", []);
+
+    app.controller("Ctrl", ["$scope", function ($scope) {
+
+        $scope.title = "my accordin";
+        $scope.expends =[
+                    {title: 'title1', content: 'content1fdsfdsf'},
+                    {title: 'title2', content: 'content2'},
+                    {title: 'title3', content: 'content3'},
+                    {title: 'title4', content: 'content4'}
+                ];
+
+    }]);
+
+    app.directive("accordin", function () {
+        return {
+            restrict: "EA",
+            replace: true,
+            transclude: 'element',
+            template: "<div style='width:500px;' ng-transclude></div>",
+            link: function ($scope, elem, attr) {
+//                alert(JSON.stringify($scope.accCont));
+
+            },
+            controller: function ($scope) {
+                this.open= function (ex) {
+                    ex.isShow = true;
+                };
+                this.closeAll = function () {
+                    for( var i = 0 ; i < $scope.expends.length ; i++){
+                        $scope.expends[i].isShow = false;
+                    }
+                }
+            }
+        }
+    });
+
+    app.directive("expender", function () {
+        return {
+            require:"^?accordin",
+            replace:true,
+            transclude: true,
+            scope:{
+                expendObj:"="
+            },
+            template: '<div style="border:1px solid blue;"><div style="border: 1px solid firebrick" ng-click="showMe(expendObj)">{{expendObj.title}}</div><div ng-show="expendObj.isShow" ng-transclude></div></div>',
+            link: function ($scope, elem, attr, accCtrl) {
+                $scope.showMe = function (ex) {
+                    accCtrl.closeAll();
+                    accCtrl.open(ex);
+                }
+            }
+        }
+    });
+
+
+</script>
+</html>

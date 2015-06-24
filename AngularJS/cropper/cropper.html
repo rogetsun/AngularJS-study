@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- 样式未调整，请用cropper-by-tpls.html测试 -->
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../assets/ngCropper/dist/ngCropper.all.css"/>
+    <link rel="stylesheet" href="../../assets/ngCropper/cropper/dist/cropper.css"/>
+    <style>
+        .cropper-preview {
+            overflow: hidden;
+            padding: 0;
+            float: left;
+            border-radius: 4px;
+            margin: 0 4px 4px 0;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div>
+<div class="panel panel-default" style="width: 950px;margin:20px auto;position: relative;z-index: 999999999;box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);border:none;">
+    <div class="panel-body">
+        <input type="file" class="btn btn-default" style="line-height: 14px;margin:0px 15px 10px;"
+               onchange="angular.element(this).scope().selectFile(this)">
+
+        <div class="container" ng-show="!!dataUrl">
+            <div class="col-md-8 well well-sm" style="padding: 0;background-color: rgba(2,2,2,0.7);">
+                <div class="cropper-container" style="padding: 0;max-height:398px;" ng-show="dataUrl">
+                    <img ng-src="{{dataUrl}}" ng-cropper ng-show="{{showEvent}}" ng-hide="{{hideEvent}}"
+                         ng-options="options">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row ">
+                    <div class="col-md-12">
+                        <div class="cropper-preview" style="width: 250px;height:250px;"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="cropper-preview" style="width: 146px;height:146px;"></div>
+                        <div class="pull-left">
+                            <div>
+                                <div class="cropper-preview" style="width: 100px;height:100px;"></div>
+                            </div>
+                            <div class="cropper-preview" style="width: 41px;height:41px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer text-right">
+        <button class="btn btn-primary btn-sm">确定</button>
+        <button class="btn btn-default btn-sm">取消</button>
+    </div>
+</div>
+<div style="position: fixed;top:0;left:0;width:100%;height:100%;background-color: rgba(2,2,2,0.5);z-index: 999999998;"></div>
+</div>
+</body>
+<script src="../../assets/jquery/jquery-1.11.2.min.js"></script>
+<script src="../../assets/ngCropper/cropper/dist/cropper.js"></script>
+<script src="../assets/angular/angular.js"></script>
+<script src="../../assets/ngCropper/dist/ngCropper.js"></script>
+<script>
+    angular.module('app', ['ngCropper'])
+            .controller('ctrl', ['$scope', '$timeout', 'Cropper', function ($scope, $timeout, Cropper) {
+                $scope.preview = {};
+                $scope.options = {
+                    maximize: true,
+                    aspectRatio: 1,
+                    done: function (dataNew) {
+                        $scope.data = dataNew;
+                    },
+                    preview: ".cropper-preview",
+                    data: $scope.data
+                };
+                $scope.selectFile = function (inputFileElement) {
+                    $scope.imgFile = inputFileElement.files[0];
+                    Cropper.encode($scope.imgFile)
+                            .then(function (dataUrl) {
+                                $scope.dataUrl = dataUrl;
+                                $timeout(reShowCropper);
+                            });
+                };
+                $scope.scale = function (width) {
+                    Cropper.crop($scope.imgFile, $scope.data)
+                            .then(function (blob) {
+                                return Cropper.scale(blob, {width: width});
+                            })
+                            .then(Cropper.encode).then(function (dataUrl) {
+                                ($scope.preview || ($scope.preview = {})).dataUrlSM = dataUrl;
+                            });
+                };
+                $scope.showEvent = 'show';
+                $scope.hideEvent = 'hide';
+                function reShowCropper() {
+                    hideCropper();
+                    showCropper();
+                }
+
+                function showCropper() {
+                    $scope.$broadcast($scope.showEvent);
+                }
+
+                function hideCropper() {
+                    $scope.$broadcast($scope.hideEvent);
+                }
+
+
+                $scope.getImgBase64 = function () {
+                    return Cropper.crop($scope.imgFile, $scope.data)
+                            .then(Cropper.encode)
+                            .then(function (dataUrl) {
+                                $scope.preview.dataUrl = dataUrl;
+                                return dataUrl;
+                            });
+                }
+            }]);
+</script>
+</html>

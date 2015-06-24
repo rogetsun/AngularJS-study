@@ -1,0 +1,10 @@
+filter
+orderBy
+limitTo
+currency
+自定义filter
+.filter('filterName',['$http','myService',function($http, myService){
+       return function(needFilteObj [,filterArgument1,filterArgument2,.....]){
+           return FiltedObj;
+       }
+    }]);

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="checkbox btn btn-default btn-xs">
+    <label>
+        <input type="checkbox" value="">
+        <span>张三</span>
+    </label>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-body">
+
+        <uv-checkbox-group item-unique-key="id" selected-item-array="selectArr" item-selected-key="selected" item-array="arr"
+                           checkbox-name="uvc" all-selectable="true">
+            <uv-checkbox ng-repeat="it in arr" checkbox-item="it" checkbox-class="btn-sm" checkbox-change="change(it)">
+                {{it.name}}
+            </uv-checkbox>
+        </uv-checkbox-group>
+
+    </div>
+
+    <div class="panel-footer">
+        <button ng-click="show()" class="btn btn-primary">show</button>
+    </div>
+</div>
+</body>
+<script src="../../../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', ['uv.directive.checkbox'])
+            .controller('ctrl', function ($scope) {
+                $scope.selectArr = [];
+                $scope.arr = [
+                    {id: 1, name: 'name1'},
+                    {id: 2, name: 'name2'},
+                    {id: 3, name: 'name3'},
+                    {id: 4, name: 'name4'},
+                    {id: 5, name: 'name5'},
+                    {id: 6, name: 'name6'},
+                    {id: 7, name: 'name7'},
+                    {id: 8, name: 'name8'},
+                    {id: 9, name: 'name9'},
+                    {id: 10, name: 'name10'},
+                    {id: 11, name: 'name11'},
+                    {id: 12, name: 'name12'}
+                ];
+                $scope.key = {
+                    name: 'name',
+                    id: 'id'
+                };
+                $scope.show = function () {
+                    console.log($scope.selectArr);
+                };
+                $scope.change = function (it) {
+                    console.log("change:" + it.selected);
+                }
+            });
+
+    /**
+     * Created by uv2sun on 15/1/20.
+     */
+    angular.module('uv.directive.checkbox', [])
+            .directive('uvCheckboxGroup', function () {
+                return {
+                    restrict: 'EA',
+                    replace: true,
+                    transclude: true,
+                    scope: {
+                        itemUniqueKey: '@',
+                        itemSelectedKey: '@',
+                        checkboxName: '@',
+                        selectedItemArray: '=',
+                        itemArray: '=',
+                        allSelectable: '@',
+                        allSelectChange: '&'
+                    },
+                    template: '<div class="panel-default">' +
+                    '<div style="padding: 0;margin-bottom:0;" ng-show="allSelectable">' +
+                    '<a href="" ng-click="chooseAll()">全选</a> / ' +
+                    '<a href="" ng-click="unChooseAll()">全不选</a>' +
+                    '</div>' +
+                    '<div class="panel-body" style="padding: 0;" ng-transclude></div>' +
+                    '</div>',
+                    link: function (scope, elem, attr, ctrl) {
+                        scope.chooseAll = function () {
+                            angular.forEach(scope.itemArray, function (v) {
+                                v[scope.itemSelectedKey] = true;
+                            });
+                            scope.allSelectChange && scope.allSelectChange();
+                            if (scope.selectedItemArray) {
+                                scope.selectedItemArray.splice(0, scope.selectedItemArray.length);
+                                angular.copy(scope.itemArray, scope.selectedItemArray);
+                            }
+                        };
+                        scope.unChooseAll = function () {
+                            angular.forEach(scope.itemArray, function (v) {
+                                delete v[scope.itemSelectedKey];
+                                if (scope.selectedItemArray) {
+                                    scope.selectedItemArray.splice(0, scope.selectedItemArray.length);
+                                }
+                            });
+                            scope.allSelectChange && scope.allSelectChange();
+                        }
+                    },
+                    controller: ['$scope', '$element', '$attrs', function ($scope, $elem, $attrs) {
+
+                        this.add = function (it) {
+                            $scope.selectedItemArray && $scope.selectedItemArray.push(it);
+                        };
+                        this.remove = function (it) {
+                            if ($scope.selectedItemArray)
+                                for (var i = 0; i < $scope.selectedItems.length; i++) {
+                                    if (!$scope.selectedItemArray[i][$scope.itemSelectedKey]) {
+                                        $scope.selectedItemArray.splice(i, 1);
+                                        break;
+                                    }
+                                }
+                        };
+                        this.getItemUniqueKey = function () {
+                            return $scope.itemUniqueKey;
+                        };
+                        this.getItemSelectedKey = function () {
+                            return $scope.itemSelectedKey;
+                        };
+                        this.getCheckboxName = function () {
+                            return $scope.checkboxName;
+                        };
+                    }]
+                }
+            })
+            .directive('uvCheckbox', function () {
+                return {
+                    restrict: 'EA',
+                    replace: true,
+                    transclude: true,
+                    scope: {checkboxItem: '=', checkboxClass: '@', checkboxStyle: '@', checkboxChange: '&'},
+                    template: '<div class="checkbox btn-default btn"  ng-class="checkboxClass" style="margin:4px 4px 4px 0;padding:2px 8px;{{checkboxStyle}}">' +
+                    '<label>' +
+                    '<input ng-click="toggleMe(checkboxItem)" type="checkbox" ng-value="checkboxItem[itemUniqueKey]" id="{{checkboxName+\'-\'+checkboxItem[itemUniqueKey]}}" name="{{checkboxName}}" ng-model="checkboxItem[itemSelectedKey]">' +
+                    '<span ng-transclude style="line-height: 20px;"></span>' +
+                    '</label>' +
+                    '</div>',
+                    require: '^?uvCheckboxGroup',
+                    link: function (scope, elem, attrs, ctrl) {
+                        scope.itemUniqueKey = ctrl.getItemUniqueKey();
+                        scope.itemSelectedKey = ctrl.getItemSelectedKey();
+                        scope.checkboxName = ctrl.getCheckboxName();
+                        scope.toggleMe = function (it) {
+                            scope.checkboxChange && scope.checkboxChange();
+                            if (it[scope.itemSelectedKey]) {
+                                ctrl.add(it);
+                            } else {
+                                ctrl.remove(it);
+                            }
+                        }
+                    }
+                }
+            });
+
+</script>
+</html>

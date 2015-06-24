@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+    <style>
+        * {
+            outline: none;
+        }
+    </style>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<m-direc m-func="data.show" data="data"></m-direc>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    /**
+     * 指令使用“&”绑定function时，入参只能传入指令外部的scope属性。
+     * 如果需要入参有指令内部给入，则用“＝”号作为对象绑定，传入引用。
+     */
+    angular.module('app', [])
+            .directive('mDirec', function () {
+                return {
+                    restrict: 'EA',
+                    replace: true,
+                    tansclude: true,
+                    template: '<div><input type="text" class="btn btn-default" ng-model="user" style="cursor: auto;"><button ng-click="show(user)" class="btn btn-danger">show</button></div>',
+                    scope: {
+                        mFunc: '=',
+                        data: '='
+                    },
+                    link: function (scope, elem, attrs) {
+                        scope.show = function (u) {
+                            scope.mFunc("m-func:" + u);
+                            scope.data.show("data.m-func:" + u)
+
+                        }
+                    }
+                }
+            })
+            .controller('ctrl', function ($scope) {
+                $scope.data = {
+                    show: function (u) {
+                        console.log(u);
+                    }
+                }
+            })
+</script>
+</html>

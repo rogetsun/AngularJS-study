@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+
+<ui-view></ui-view>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    angular.module('app', ['ui.router'])
+            .config(function ($stateProvider, $urlRouterProvider) {
+                $urlRouterProvider.otherwise("/root/main");
+                $stateProvider
+                        .state('root', {
+                            url: '/root',
+                            template: '<div class="panel panel-danger">' +
+                            '<div class="panel-heading">' +
+                            '<a href="" ui-sref="main" ui-sref-active="active" class="btn btn-xs btn-success">main</a>&nbsp;&nbsp;' +
+                            '<a href="" ui-sref="main.sub1" ui-sref-active="active" class="btn btn-xs btn-success">sub1</a>&nbsp;&nbsp;' +
+                            '<a href="" ui-sref="main.sub2" ui-sref-active="active" class="btn btn-xs btn-success">sub2</a>' +
+                            '</div>' +
+                            '<div class="panel-body" ui-view=""></div>' +
+                            '<div class="panel-footer" >title:{{datat.title}},content:{{datac.content}}</div>' +
+                            '</div>',
+                            controller: function ($rootScope, $scope) {
+                            }
+                        })
+                        .state('main', {
+                            url: '/main',
+                            parent: 'root',
+                            template: '<div  ui-view=""></div>',
+                            resolve: {
+                                data: function () {
+                                    return {title: 'test title'};
+                                }
+                            },
+                            data: {
+                                data: {
+                                    content: 'test Content'
+                                }
+                            },
+                            controller: function ($rootScope, $scope, $state, data) {
+                                $rootScope.datat = data;
+                                $rootScope.datac = $state.current.data.data;
+                            }
+                        })
+                        .state('main.sub1', {
+                            url: '/sub1',
+                            template: '<div><input type="text" ng-model="datat.title"></div>' +
+                            '<div><input type="text" ng-model="datac.content"></div>',
+                            controller: function ($rootScope, $scope, $state, data) {
+                                $scope.datat = data;
+                                $scope.datac = $state.current.data.data;
+                            }
+                        })
+                        .state('main.sub2', {
+                            url: '/sub2',
+                            template: '<div><input type="text" ng-model="datat.title"></div>' +
+                            '<div><input type="text" ng-model="datac.content"></div>',
+                            controller: function ($scope, $state, data) {
+                                $scope.datat = data;
+                                $scope.datac = $state.current.data.data;
+                            }
+                        })
+            })
+</script>
+</html>

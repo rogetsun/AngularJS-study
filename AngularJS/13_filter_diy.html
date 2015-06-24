@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl1">
+<input type="text" ng-model="query"/>
+
+<div>
+    <input type="text" ng-model="d.msg"/>
+
+    <div>{{d.msg}}</div>
+    <div ng-bind="d.msg | filter2:'f1':'f2':'fi'"></div>
+</div>
+<div>
+    <ul>
+        <li ng-repeat="am in arrmsg | myFilter:'1'">
+            {{am.id+":"+am.name}}
+        </li>
+    </ul>
+</div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    /***
+     app.filter('filterName',['$http','myService',function($http, myService){
+            return function(needFilteObj,filterArgument){
+                return FiltedObj;
+            }
+         }]);
+     *
+     *
+     */
+
+
+    var app = angular.module('app', []);
+
+    app.filter('filter2', function () {
+        return function () {
+            console.log(arguments.length);
+            var ar = "";
+            for( var i = 0 ; i < arguments.length; i++){
+                ar += arguments[i]+",";
+            }
+            console.log(ar);
+        }
+    })
+
+    app.filter('myFilter', ['$http', function ($http) {
+        return function (txt, qry) {
+
+            if (!(txt && qry)) {
+                return txt;
+            }
+            console.log("#####"+txt);
+
+            var ret = [];
+
+            angular.forEach(txt, function (v, idx) {
+                var flag = false;
+//                console.log(JSON.stringify(v)+"------"+idx);
+                for ( k in v ){
+                    if ( k != "$$hashKey" && (v[k]+"").indexOf(qry) > -1 ){
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) {
+                    this.push(v);
+                }
+            }, ret);
+
+            console.log("ret is :"+ret);
+
+            return ret;
+        }
+    }],function(){
+
+    });
+
+    app.controller('ctrl1', function ($scope) {
+        $scope.arrmsg = [
+
+            {id: 1, name: 'name 12'},
+            {id: 2, name: 'name 23'},
+            {id: 3, name: 'name 34'},
+            {id: 4, name: 'name 45'},
+            {id: 5, name: 'name 56'}
+
+        ];
+        $scope.d = {
+            msg:"msgfdsfds"
+        }
+    });
+
+</script>
+
+</html>

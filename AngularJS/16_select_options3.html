@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="well well-sm">
+    <label>arr1：
+        <select ng-model="a1" ng-options="a.id as a.name for a in {{[{name:'default'}].concat(arr1)}}"
+                ng-change="change()"></select>
+    </label>
+    <label>arr2:
+        <select ng-model="a2"
+                ng-options="a.id as a.name for a in arr2"></select>
+    </label>
+</div>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                $scope.arr1 = [
+                    {id: 1, name: 'n1'},
+                    {id: 2, name: 'n2'},
+                    {id: 3, name: 'n3'},
+                    {id: 4, name: 'n4'}
+                ];
+                $scope.tempArr = [
+                    {id: 1, name: 'n1'},
+                    {id: 2, name: 'n2'},
+                    {id: 3, name: 'n3'},
+                    {id: 4, name: 'n4'}
+                ];
+                $scope.arr2 = [{name:'please choose'}];
+                $scope.change = function () {
+                    $scope.arr2 = [{name: 'please select'}].concat($scope.tempArr);
+                }
+
+            })
+</script>
+</html>

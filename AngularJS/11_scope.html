@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" >
+
+<div>
+    <input ng-model="d.msg" ng-change="show()">
+    <div>{{d.msg}}</div>
+</div>
+<hr/>
+<div ng-controller="FirstCtrl">
+    <input ng-model="d.msg" ng-change="show()">
+    <div>{{d.msg}}</div>
+</div>
+<hr/>
+<div ng-controller="SecondCtrl">
+    <input ng-model="d.msg">
+    <div>{{d.msg}}</div>
+</div>
+<hello></hello>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module('app',[]);
+
+    app.controller('FirstCtrl',['$scope', '$rootScope', function ($scope, $rootScope) {
+
+        $scope.name = "litx";
+        $rootScope.show = function () {
+            console.log(this);
+        }
+        $scope.d = {};
+
+    }]);
+
+    app.controller('SecondCtrl',['$scope', function ($scope) {
+    }]);
+
+    app.directive('hello', function () {
+        return {
+            scope:{
+                myName:"="
+            },
+            restrict:"A"
+        }
+    })
+</script>
+</html>

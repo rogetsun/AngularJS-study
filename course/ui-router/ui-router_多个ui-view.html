@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" class="container-fluid">
+    <div ui-view="left" class="col-sm-3"></div>
+    <div ui-view="content" class="col-sm-9"></div>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    angular.module('app', ['ui.router'])
+            .config(function ($stateProvider, $urlRouterProvider) {
+                $urlRouterProvider.otherwise('/main');
+                $stateProvider
+                        .state('main', {
+                            url:"/main",
+                            template:'<div>test </div>',
+                            views:{
+                                'left':{
+                                    template:'<div>left' +
+                                    '<div ui-view="left"></div></div>',
+                                    controller: function ($scope) {
+
+                                    }
+                                },
+                                'content':{
+                                    template:'<div>content' +
+                                    '<div ui-view=""></div></div>'
+                                }
+                            }
+                        })
+                        .state('main.sub', {
+                            url:'/sub',
+                            template:'<div>detail</div>',
+                            views:{
+                                'left':{
+                                    template:"<div>detail2</div>"
+                                },
+                                '':{
+                                    template:"<div>content</div>"
+                                }
+                            }
+                        })
+            });
+</script>
+</html>

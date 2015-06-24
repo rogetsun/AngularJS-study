@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+        <!--
+            ng-repeat
+        -->
+<html ng-app="MM">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        table tr td{
+            padding: 4px 8px;
+        }
+        td.in{
+            background-color: #EC7600;
+        }
+    </style>
+</head>
+<body ng-controller="MC" style="position: relative;padding: 0;margin:0;">
+    <div style="position: relative;float:left;">
+        <table style="border:1px solid #008800;;border-spacing: 0;">
+            <tr ng-repeat="user in users" style="">
+                <td ng-bind="user.attr1" style="border:1px solid #333333" ng-class="cls[$index][1]"></td>
+                <td ng-bind="user.attr2" style="border:1px solid #333333" ng-class="cls[$index][2]"></td>
+                <td ng-bind="user.attr3" style="border:1px solid #333333" ng-class="cls[$index][3]"></td>
+                <td ng-bind="user.attr4" style="border:1px solid #333333" ng-class="cls[$index][4]"></td>
+                <td ng-bind="user.attr5" style="border:1px solid #333333" ng-class="cls[$index][5]"></td>
+                <td style="border:1px solid #333333"><a ng-click="showMsg($index)" href="" >show me</a></td>
+            </tr>
+        </table>
+    </div>
+    <div style="position: relative;float:left;">
+        <table style="border:1px solid #008800;border-spacing: 0;">
+            <tr ng-repeat="user in users" style="">
+                <td style="border:1px solid #333333" ng-mouseenter="enter($index,'1')" ng-mouseleave="out($index,'1')"><input ng-model="user.attr1" type="text"/></td>
+                <td style="border:1px solid #333333" ng-mouseenter="enter($index,'2')" ng-mouseleave="out($index,'2')"><input ng-model="user.attr2" type="text"/></td>
+                <td style="border:1px solid #333333" ng-mouseenter="enter($index,'3')" ng-mouseleave="out($index,'3')"><input ng-model="user.attr3" type="text"/></td>
+                <td style="border:1px solid #333333" ng-mouseenter="enter($index,'4')" ng-mouseleave="out($index,'4')"><input ng-model="user.attr4" type="text"/></td>
+                <td style="border:1px solid #333333" ng-mouseenter="enter($index,'5')" ng-mouseleave="out($index,'5')"><input ng-model="user.attr5" type="text"/></td>
+            </tr>
+        </table>
+    </div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var mm = angular.module("MM",[]);
+    mm.controller("MC", ["$scope",function ($scope) {
+        var users = [];
+        var cls=[];
+        for(var i = 0 ; i < 10; i++ ){
+            users[i] = {};
+            cls[i]=[];
+            for(var j = 1 ; j <= 5; j++){
+                users[i]['attr'+j] = "user"+i+""+j;
+                cls[i][j]="out";
+            }
+        }
+        console.log(users);
+        $scope.users = users;$scope.cls = cls;
+        $scope.showMsg=function(idx){
+            console.log(users[idx]);
+
+        }
+        $scope.enter = function (idx,i) {
+            cls[idx][i]="in";
+        }
+        $scope.out=function(idx,i){
+            cls[idx][i]="out";
+        }
+    }]);
+</script>
+</html>

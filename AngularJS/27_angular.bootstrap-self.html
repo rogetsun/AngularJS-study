@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body>
+<div id="app" ng-controller="myCtrl">
+    {{title}}
+</div>
+<div>
+    {{title}}
+</div>
+</body>
+<script src="../assets/jquery/jquery-1.11.2.min.js"></script>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    function abc(name,id){};
+
+    angular.element(document).ready(function () {
+
+        console.log(arguments.length);
+//        angular.element('#app')
+//                .attr('ng-app', 'myApp')
+//                .attr('ng-controller', 'myCtrl');
+
+        angular.bootstrap(angular.element('#app'), ['myApp']);
+    });
+
+
+    angular.module('myApp', []).controller('myCtrl', function ($scope, $injector) {
+        $scope.title = 'abc';
+        console.log($injector.annotate(abc));
+        console.log(abc.toString());
+    })
+
+
+
+
+</script>
+</html>

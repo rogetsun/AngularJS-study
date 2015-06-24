@@ -1,0 +1,48 @@
+<div ng-click="show($event)" style="cursor:pointer;">
+    <style>.cropper-preview {
+        overflow: hidden;
+        padding: 0;
+        float: left;
+        border-radius: 4px;
+        margin: 0 4px 4px 0;
+        border: 1px solid #eee;
+    }</style>
+    <div ng-show="cropperShow"
+         style="width: 980px;margin-left: -490px;margin-right: auto;position:fixed;top:1px;left:50%;z-index: 99999997;">
+        <div class="panel panel-default"
+             style="margin:10px auto;position: relative;z-index: 99999999;box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);border:none;">
+            <div class="panel-body "><input type="file" class="btn btn-default"
+                                            style="line-height: 14px;margin:0px 15px 10px;"
+                                            onchange="angular.element(this).scope().selectFile(this)">
+
+                <div ng-show="!!dataUrl" style="margin:14px;">
+                    <div class="well well-sm pull-left" style="width:600px;padding: 0;background-color: #000;">
+                        <div class="cropper-container" style="padding: 0;height:398px;" ng-show="dataUrl"><img
+                                id="_uv_cropper_img" ng-src="{{dataUrl}}"></div>
+                    </div>
+                    <div style="width: 300px;margin-left: 10px;" class="pull-left">
+                        <div>
+                            <div class="cropper-preview" style="width: 250px;height:250px;"></div>
+                        </div>
+                        <div>
+                            <div class="cropper-preview" style="width: 146px;height:146px;"></div>
+                            <div class="pull-left">
+                                <div>
+                                    <div class="cropper-preview" style="width: 100px;height:100px;"></div>
+                                </div>
+                                <div class="cropper-preview" style="width: 41px;height:41px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <button class="btn btn-primary btn-sm" ng-click="ok($event)">确定</button>
+                <button class="btn btn-default btn-sm" ng-click="cancel($event)" style="margin-left: 10px;">取消</button>
+            </div>
+        </div>
+        <div style="position: fixed;top:0;left:0;width:100%;height:100%;background-color: rgba(2,2,2,0.5);z-index: 99999998;"></div>
+    </div>
+    <span ng-transclude
+          style="cursor:pointer;margin-left: auto;margin-right: auto;position: relative;z-index: -1;width:100%;height:100%;overflow: hidden;"></span>
+</div>

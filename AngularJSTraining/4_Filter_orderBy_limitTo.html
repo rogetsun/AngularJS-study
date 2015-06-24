@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+search all : <input type="text" ng-model="query"><br/>
+search id : <input type="text" ng-model="query.id"><br/>
+search name : <input type="text" ng-model="query.name"><br/>
+search gender :
+<select ng-model="query.gender" ng-options="gender.id as gender.name for gender in {{[{id:undefined,name:'ALL'}].concat(genders)}} "></select><br/>
+search all : <input type="text" ng-model="query.$">
+
+<table>
+    <tbody>
+    <tr ng-repeat="u in users | filter:query  ">
+        <td>{{u.id}}</td>
+        <td>{{u.name}}</td>
+        <td>{{u.gender==0?'女':'男'}}</td>
+        <td>
+            <a href="" ng-click="modify(u)">修改</a>
+            <a href="" ng-click="del($index)">del</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div>
+        id: <input type="number" ng-model="tmpU.id" />
+        name: <input type="text" ng-model="tmpU.name"/>
+        gender: <select ng-model="tmpU.gender" ng-options="gender.id as gender.name for gender in genders"
+                        ng-change="change()">
+                    <option value="" >请选择</option>
+                </select>
+        <br/>
+        <button ng-click="save()" >save</button>
+        <button ng-click="add()">add</button>
+</div>
+
+
+<div>
+    <input type="text" ng-model="string"/>
+    <span>{{string | limitTo:'-2'}}</span>
+</div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script src="service.js"></script>
+<script>
+    var app = angular.module('app', ['util']);
+    app.controller('ctrl', ['$scope', 'util.service', function ($scope, us) {
+        $scope.tmpU = {};
+        $scope.query = {};
+        $scope.genders = [
+//            {name: '全部'},
+            {id: 0, name: '女'},
+            {id: 1, name: '男'}
+        ];
+
+
+        us.getUsers(function (data) {
+            $scope.users = data;
+            console.log(data);
+        });
+
+        $scope.change = function () {
+            console.log($scope.tmpU.gender)
+        }
+
+        $scope.$watch('query', function (nv, ov) {
+            console.log(ov);
+            console.log(nv);
+        },true);
+
+        $scope.modify = function (u) {
+            $scope.modifyUser = u;
+            angular.copy(u, $scope.tmpU);
+            console.log('modifyUser = ' + JSON.stringify($scope.tmpU));
+        }
+
+        $scope.save = function () {
+            angular.copy($scope.tmpU, $scope.modifyUser);
+            $scope.tmpU = {};
+        }
+
+        $scope.del = function (i) {
+            $scope.users.splice(i, 1);
+        }
+
+        $scope.add = function () {
+            $scope.users.push($scope.tmpU);
+            $scope.tmpU = {};
+        }
+
+    }]);
+</script>
+</html>

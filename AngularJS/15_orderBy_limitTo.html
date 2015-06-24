@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<hr style="border: 1px solid #888"/>
+<select ng-model="ob" >
+    <option value="id" >id</option>
+    <option value="name" ng-selected="true">name</option>
+</select>
+<table>
+    <caption>Users:</caption>
+    <tr ng-repeat="u in users | orderBy:ob:true | limitTo:-5">
+        <td style="padding:1px 10px">{{u.id}}</td>
+        <td>{{u.name}}</td>
+    </tr>
+</table>
+
+</body>
+
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module('app', []);
+
+    app.controller('ctrl', function ($scope, $http) {
+        $http({url: '10_data.json', method: "GET"})
+                .success(function (data, status, header, config) {
+                    console.log(data);
+                    $scope.users = data;
+                });
+    });
+
+</script>
+</html>

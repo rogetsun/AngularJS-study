@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        table{
+            width:95%;margin:auto;padding:0;border-spacing: 0px;
+            border: 1px solid #eee;
+        }
+        table td{
+            border-top: 1px solid #eee;
+            border-right: 1px solid #eee;
+            padding: 2px;
+            font-size: 13px;
+        }
+        table tr td:last-child {
+            border-right: none;
+        }
+        table tr:first-child td {
+            border-top: none;
+        }
+        a {
+            text-decoration: none;
+            color: #006dcc;
+            font-size: 13px;
+        }
+        a:hover {
+            color: #003bb3;
+        }
+
+        input {
+            height: 13px;
+            width: 150px;
+        }
+    </style>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+    <div>
+        <table style="">
+            <tr ng-repeat="u in users " class="tr">
+                <td>{{u.id}}</td>
+                <td><input type="text" ng-model="u.name"/></td>
+                <td>
+                    <select name="" id="" ng-model="u.gender.id"
+                       ng-options="g.id as g.name for g in [{name:'不选'},{id:1,name:'男'},{id:0,name:'女'}]" ></select>
+                </td>
+                <td>
+                    <a ng-click="show(u)" href="">查看</a>
+                    <a ng-click="modify(u)" href="">修改</a>
+                    <a ng-click="del($index)" href="">删除</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+<script src="assets/angular/angular.min.js"></script>
+<script src="../../AngularJSTraining/service.js"></script>
+
+<script>
+    var app = angular.module('app',['util']);
+    app.controller('ctrl',['$scope','$http', 'util.service', function ($scope, $http, us) {
+
+        $scope.users = [];
+        us.getUsers(function (data) {
+
+            angular.forEach(data, function (u) {
+                u.gender = {
+                    name: u.gender==0?'女':'男',
+                    id: u.gender
+                }
+            });
+
+            $scope.users = data;
+
+            console.log($scope.users);
+
+        });
+
+    }]);
+</script>
+</html>

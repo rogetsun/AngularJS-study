@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<ui-view></ui-view>
+<button class="btn btn-danger" ng-click="goback()">goback</button>
+</body>
+<script src="../../../assets/jquery/jquery-1.11.2.min.js"></script>
+<script src="../../../assets/angular/angular.js"></script>
+<script src="../../../assets/angular/angular-ui-router.js"></script>
+<script src="../../my-service/uv-loading/uv-loading.js"></script>
+<script>
+    angular.module('app', ['ui.router', 'myState', 'uv.service.loading'])
+            .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+                $urlRouterProvider.otherwise('/index');
+                $stateProvider
+                        .state('index', {
+
+                            url: '/index',
+                            template: '<div class="panel panel-danger">' +
+                            '<div class="panel-heading">' +
+                            '<div class="btn-group btn-group-justified">' +
+                            '<a href="" ui-sref="myState({stepID:1})" ui-sref-active="active" class="btn btn-sm btn-warning">myState.step1</a>' +
+                            '<a href="" ui-sref="myState({stepID:2})" ui-sref-active="active" class="btn btn-sm btn-warning">myState.step2</a>' +
+                            '<a href="" ui-sref="myState({stepID:3})" ui-sref-active="active" class="btn btn-sm btn-warning">myState.step3</a>' +
+                            '<a href="" ui-sref="myState2()" ui-sref-active="active" class="btn btn-sm btn-warning">myState2</a>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="panel-body" ui-view=""></div>' +
+                            '</div><hr/>' +
+                            '<div class="well">{{userList|json}}</div>',
+                            resolve: {
+                                userList: ['$http', function ($http) {
+                                    return $http.get('../../../assets/data.json')
+                                            .then(function (res) {
+                                                console.log(res);
+                                                return res.data;
+                                            });
+                                }]
+                            },
+                            controller: ['$scope', 'userList', function ($scope, userList) {
+                                $scope.title = 'test';
+                                $scope.content = 'content';
+                                $scope.userList = userList;
+                            }]
+                        });
+
+            }])
+            .controller('ctrl', ['$scope', function ($scope) {
+                $scope.goback = function () {
+                    console.log($location);
+                    history.go(-1);
+                };
+
+            }]);
+
+    angular.module('myState', ['myStateCtrl'])
+            .config(['$stateProvider', function ($stateProvider) {
+                $stateProvider
+                        .state('myState', {
+                            url: '/myState/{stepID}',
+                            parent: 'index',
+                            templateUrl: function (sp) {
+                                if (!sp.stepID) sp.stepID = 1;
+                                return 'myState' + sp.stepID + '.html';
+                            },
+                            controllerProvider: ['$stateParams', function ($stateParams) {
+                                if (!$stateParams.stepID) $stateParams.stepID = 1;
+                                return 'myStateCtrl' + $stateParams.stepID;
+                            }]
+
+                        })
+                        .state('myState2', {
+                            url: '/myState2',
+                            parent: 'index',
+                            template: '<div class="well">{{userList}}</div>'
+                        })
+            }]);
+    angular.module('myStateCtrl', [])
+            .controller('myStateCtrl1', ['$scope', '$state', '$stateParams', function ($scope, $state, $stateParams) {
+                $scope.stepID = $stateParams.stepID;
+            }])
+            .controller('myStateCtrl2', ['$scope', '$state', '$stateParams', function ($scope, $state, $stateParams) {
+                $scope.stepID = $stateParams.stepID;
+            }])
+            .controller('myStateCtrl3', ['$scope', '$state', '$stateParams', function ($scope, $state, $stateParams) {
+                $scope.stepID = $stateParams.stepID;
+            }]);
+
+</script>
+</html>

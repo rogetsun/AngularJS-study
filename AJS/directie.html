@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<!--<select ng-model="users" >-->
+    <!--<option value="{{u.id}}" ng-repeat="u in users">{{u.id}}--{{u.name}}</option>-->
+<!--</select>-->
+
+<select ng-model="user" ng-options="u.name for u in {{[{name:'all'}].concat(users)}} "
+        ng-change="showSelected()"></select>
+
+</body>
+<script src="assets/angular/angular.js"></script>
+<script>
+    /**
+     * [select as] label [group by group] for value in array
+     *
+     */
+angular.module('app',[])
+        .controller('ctrl',['$scope', '$http', function ($scope, $http) {
+//            $http.get('data.json').success(function (data) {
+//                $scope.users = data;
+//                console.log(data);
+//            })
+            $scope.users = [
+                {
+                    "name": "zhangsan",
+                    "id": 1,
+                    "gender":1
+                },
+                {
+                    "name": "wangwu",
+                    "id": 2,
+                    "gender":1
+                },
+                {
+                    "name": "lisi",
+                    "id": 3,
+                    "gender":1
+                },
+                {
+                    "name": "zhaoliu",
+                    "id": 4,
+                    "gender":0
+                },
+                {
+                    "name": "wusan",
+                    "id": 5,
+                    "gender":0
+                },
+                {
+                    "name": "liergou",
+                    "id": 6,
+                    "gender":0
+                },
+                {
+                    "name": "wangwei",
+                    "id": 7,
+                    "gender":0
+                },
+                {
+                    "name": "hujunsan",
+                    "id": 8,
+                    "gender":1
+                }
+            ];
+            console.log([1,2,3,4].concat([5,6,7]));
+            $scope.showSelected = function () {
+                console.log($scope.user)
+            }
+        }]);
+</script>
+</html>

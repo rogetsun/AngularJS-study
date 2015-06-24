@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<input type="text" ui-keypress="{'shift-enter':'showme($event,txt)'}" ng-model="txt"/>
+
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/ui-utils.js"></script>
+<script>
+    /***
+     * 可以依赖整个ui.utils，也可以单独只用ui.keypress
+     */
+//    angular.module('app', ['ui.keypress'])
+    angular.module('app', ['ui.utils'])
+            .controller('ctrl', function ($scope) {
+                $scope.showme = function ($event, o) {
+                    console.log($event);
+                    console.log(o);
+//                    $event.preventDefault();
+                }
+            });
+</script>
+</html>

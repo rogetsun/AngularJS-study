@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .div {
+            margin: 50px auto;
+            height: 30px;
+            width: 400px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            /*cursor: text;*/
+            position: relative;
+        }
+
+        .div > .input {
+            margin: 0;
+            height: 30px;
+            width: 300px;
+            line-height: 24px;
+            padding: 0px 40px 0 40px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            border: 0px;
+            background-color: #ddd;
+            position: absolute;
+            transition: all 0.5s ease-in-out;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            margin: 0 50px;
+
+        }
+
+        .input:focus {
+            width: 400px;
+            outline: none;
+            margin-left: 0px;
+
+        }
+        /** ~ 兄弟
+        **/
+        .input:focus ~ .slid{
+            opacity: 1;
+        }
+
+        .div .end {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: inherit;
+            line-height: 30px;
+            padding: 0 7px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-transition: all 0.5s;
+            -moz-transition: all 0.5s;
+            -ms-transition: all 0.5s;
+            -o-transition: all 0.5s;
+            transition: all 0.5s;
+            display: block;
+            z-index: 999;
+            opacity: 0;
+            color: #ccc;
+            font-size: 12px;
+        }
+
+        .type {
+            -webkit-transition: all 0.5s;
+            -moz-transition: all 0.5s;
+            -ms-transition: all 0.5s;
+            -o-transition: all 0.5s;
+            transition: all 0.5s;
+            position: relative;
+            display: block;
+            width: 38px;
+            height: inherit;
+            opacity: 0;
+            cursor: pointer;
+
+        }
+
+        .type ul {
+            list-style: none;
+            width: inherit;
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 30px;
+            padding: 0;
+            margin: 0;
+
+        }
+
+        ul li {
+            height: 20px;
+            line-height: 20px;
+            position: relative;
+            background-color: #ddd;
+        }
+
+        .div>.end:hover ~ .input {
+            border-bottom-left-radius: 0;
+            -moz-border-radius-bottomleft: 0;
+            -webkit-border-bottom-left-radius: 0;
+        }
+
+        .type span {
+            position: relative;
+            float: right;
+            color: #ffffff;
+            margin: 0;
+            padding: 7px 6px 0 0;
+            width: 15px;
+            height: inherit;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        .type:hover ~ input {
+
+        }
+        .type:hover ul {
+            display: block;
+        }
+
+        .type ul li:hover {
+            background-color: #eee;
+        }
+
+        .rad span {
+            border: 1px solid #333;
+            border-radius: 3px;
+
+        }
+
+        .rad span:hover ~ span {
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="div">
+
+    <input class="input" type="text" placeholder="搜索">
+
+    <div class="type slid">
+        <span>v</span>
+        <ul>
+            <li>abc</li>
+            <li>edf</li>
+            <li>ghi</li>
+        </ul>
+
+    </div>
+    <div class="end slid">搜索</div>
+</div>
+
+<div class="rad">
+    <span class="c1">abc</span>
+    <span class="c2">abc</span>
+    <span class="c3">abc</span>
+</div>
+</body>
+</html>

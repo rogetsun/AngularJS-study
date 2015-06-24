@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title></title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="assets/default.css"/>
+</head>
+<body ng-app="app">
+<div class="container-fluid">
+    <div class="row">
+        <div ui-view="left" class="col-sm-3" style="border-right: 1px solid #333;"></div>
+        <div ui-view="content" class="col-sm-9"></div>
+    </div>
+</div>
+</body>
+<script src="assets/angularjs/angular.js"></script>
+<script src="assets/angularjs/angular-ui-router.js"></script>
+<script src="assets/angularjs/angular-animate.js"></script>
+<script src="app/book/bookService.js"></script>
+<script src="app/mainModule.js"></script>
+
+
+<script>
+
+    var app = angular.module('app', ['main']);
+
+</script>
+</html>

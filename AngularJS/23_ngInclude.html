@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="container">
+    <div class="col-md-12 label label-danger" style="margin:0;">
+        <select ng-model="tpl" ng-options="t.url as t.name for t in {{[{name:'选择模板'}].concat(tpls)}}" class="btn btn-danger" style="font-size: 12px;"></select>
+    </div>
+    <div class="col-md-12" ng-include="tpl"  style="margin:0;padding:0;">
+        <div>*</div>
+    </div>
+</div>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope, $rootScope) {
+                $scope.tpls = [
+                    {url:'tpls/tpl1.html', name:'tpl1'},
+                    {url:'tpls/tpl2.html', name:'tpl2'}
+                ];
+                $scope.title = 'my ngInclude title';
+                $scope.content = 'my ngInclude content';
+            });
+</script>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../assets/angular/ui-select/select.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<p>Selected: {{sel.s}}</p>
+<ui-select ng-model="sel.s" style="width:300px;" >
+    <ui-select-match placeholder="选择用户或者输入搜索姓名">{{$select.selected.name}}</ui-select-match>
+    <ui-select-choices repeat="u in users | filter:$select.search">
+        name:<span ng-bind-html="u.name | highlight:$select.search"></span><br/>
+        id:<small ng-bind-html="''+u.id |highlight:$select.search"></small>
+    </ui-select-choices>
+</ui-select>
+<hr/>
+
+
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-sanitize.min.js"></script>
+<script src="../../assets/angular/ui-select/select.js"></script>
+<script>
+    angular.module('app', ['ngSanitize', 'ui.select'])
+            .controller('ctrl', function ($scope, $http) {
+                $http.get('../../assets/data.json').then(function (res) {
+                    $scope.users = res.data;
+                    console.log(res.data);
+                });
+
+                $scope.sel = {};
+                $scope.$watch('sel', function (n, o) {
+                    console.log(JSON.stringify(o)+'----->'+JSON.stringify(n));
+                },true);
+            })
+</script>
+</html>

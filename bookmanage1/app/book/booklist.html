@@ -1,0 +1,16 @@
+<div>
+    <table class="am-table  am-table-bd">
+        <thead>
+        <th>#</th>
+        <th>name</th>
+        <th>type</th>
+        <th>opr</th>
+        </thead>
+        <tr ng-repeat="b in books">
+            <td>{{b.id}}</td>
+            <td>{{b.name}}</td>
+            <td>{{b.type}}</td>
+            <td><a ng-href="#/main/book/{{b.id}}" class="am-btn am-btn-xs am-btn-success">修改</a></td>
+        </tr>
+    </table>
+</div>

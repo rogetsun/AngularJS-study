@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="./assets/amazeui/css/amazeui.css"/>
+    <link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.css"/>
+    <style>
+        input {
+            outline:none;
+        }
+    </style>
+</head>
+<body ng-app="app" ng-controller="ctrl" class="am-container am-g ">
+<my-par my-users="userList" query="query" >
+    <my-person my-person="p" ng-repeat="p in userList|filter:query"></my-person>
+</my-par>
+</body>
+<script src="./assets/angular/angular.js"></script>
+<script src="service.js"></script>
+<script src="my_direc.js"></script>
+<script>
+    angular.module('app', ['myService', 'myDirec'])
+            .controller('ctrl', ['$scope', 'user.util', function ($scope, userUtil) {
+                $scope.userList = [];
+                userUtil.getUser().then(function (data) {
+                    $scope.users = data;
+                    for(var i = 0 ; i < 10 ; i++){
+                        console.log(i);
+                        $scope.userList.concat(data);
+                    }
+                    console.log(data);
+                    console.log($scope.userList);
+                });
+
+
+            }]);
+
+</script>
+</html>

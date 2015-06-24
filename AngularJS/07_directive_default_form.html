@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body  ng-controller="Ctrl">
+<div>
+    <fieldset><legend>{{title}}</legend>
+    <form action="" ng-submit="confirm()" name="fm" >
+
+        <div>#ID  ：<input ng-model="userMsg.id" required type="text"/></div>
+        <div>姓名：<input ng-model="userMsg.name" required type="text"/></div>
+        <div>
+            性别：
+            <select ng-model="userMsg.sex">
+                <option >请选择</option>
+                <option value="1">男</option>
+                <option value="0">女</option>
+            </select>
+        </div>
+        <div>年龄：<input ng-model="userMsg.age" required type="number"/></div>
+        <div>别名：<input ng-model="userMsg.alias" required type="text"/></div>
+        <div>地址：<textarea ng-model="userMsg.address" required type="text"></textarea></div>
+        <button ng-disabled="fm.$invalid">submit</button>
+    </form>
+    </fieldset>
+</div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module("App", []);
+
+    app.controller("Ctrl", ["$scope", function ($scope) {
+
+        $scope.userMsg = {
+            id: 1,
+            name: "张三",
+            sex: "1",
+            age: 22,
+            alias: "土豆",
+            address: "taiyuan shanxi china"
+        };
+
+        $scope.confirm = function () {
+
+            console.log("confirm..."+JSON.stringify($scope.userMsg));
+            alert(JSON.stringify($scope.userMsg));
+//            return  ($scope.userMsg.sex == 1);
+            return false;
+        };
+
+        $scope.title = "user msg edit";
+
+
+    }]);
+</script>
+</html>

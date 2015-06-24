@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div>
+        <div><surperman ll="LL" >力量</surperman></div>
+        <div><surperman sd="SD">速度</surperman></div>
+        <div><surperman mj="MJ">敏捷</surperman></div>
+        <div><surperman ll sd mj >力量 速度 敏捷</surperman></div>
+    </div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module("App",[]);
+
+    app.directive("surperman", function () {
+        return {
+            restrict:"E",
+            /**
+             * 每个指令实例都是用单独的作用于，此时加上scope:{}。否则作用域是所有surperman指令公共的
+             **/
+            scope:{},
+            /**
+             * 1、此处必须用$scope，暂时理解为控制器入参一般都是带$的
+             * 2、此处的控制器controller为指令directive内部的，和模型的控制器不是一个。
+             * 3、controller是暴露到外部，可供其他directive调用的。link是内部处理的，外部不可见。
+             * @param $scope
+             */
+            controller: function ($scope) {
+                $scope.abilities=[];
+                this.addLL = function (a) {
+                    $scope.abilities.push("ll")
+                };
+                this.addSD = function (a) {
+                    $scope.abilities.push("sd")
+                };
+                this.addMJ = function (a) {
+                    $scope.abilities.push("mj")
+                }
+            },
+            /**
+             * 处理指令内部dom和逻辑
+             * @param $scope
+             * @param elem
+             * @param attr
+             */
+            link: function ($scope, elem, attr) {//此处的scope，带不带$都可以
+                console.log(attr);
+                elem.addClass("btn btn-primary");
+                elem.bind("mouseenter", function (event) {
+                    console.log("==="+$scope.abilities)
+                });
+            }
+        }
+    });
+
+    app.directive("ll", function () {
+        return {
+            restrict: "A",
+            require: "surperman",
+            replace: false,
+            link: function (scope, elem, attr, smctrl) {
+                smctrl.addLL("LL");
+            }
+        }
+    });
+
+    app.directive("sd", function () {
+        return {
+            restrict: "A",
+            require: "surperman",
+            replace: false,
+            link: function (scope, elem, attr, smctrl) {
+                smctrl.addSD("SD");
+            }
+        }
+    });
+
+    app.directive("mj", function () {
+        return {
+            restrict: "A",
+            require: "surperman",
+            replace: false,
+            link: function (scope, elem, attr, smctrl) {
+                smctrl.addMJ("MJ");
+            }
+        }
+    });
+
+</script>
+</html>

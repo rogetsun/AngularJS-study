@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app">
+
+<test-direc>
+    <div>content </div>
+</test-direc>
+
+</body>
+<script src="assets/angular/angular.js"></script>
+<script>
+    angular.module('app',[])
+            .directive('testDirec', function () {
+                return {
+                    restrict:'E',
+                    replace:true,
+                    template:'<div><div>title</div><div ng-transclude></div></div>',
+                    transclude: true// 'element' ,true
+                }
+            })
+</script>
+</html>

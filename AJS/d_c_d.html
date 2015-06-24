@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .dshow .show {
+            display: block;
+        }
+
+        .dhide .show {
+            display: none;
+        }
+
+        .dshow .hide {
+            display: none;
+        }
+
+        .dhide .hide {
+            display: block;
+        }
+    </style>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<dept d-name="my department" workers="workers" is-show="ddisplay" ng-class="ddisplay?ddisplay:'dshow'">
+    <worker ng-repeat="w in workers" my-nick-name="{{w.name}}" worker-msg="w">
+
+    </worker>
+</dept>
+
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+
+    angular.module('app', [])
+            .directive('dept', function () {
+                return {
+                    restrict: "E",
+                    transclude: true,//'element' true
+                    template: '<div>{{dName}}<button ng-click="toggle()">showAll/closeAll</button>' +
+                    '<hr/>' +
+                    '<div ng-transclude></div>' +
+                    '</div>',
+                    scope: {
+                        dName: '@',
+                        workers: '=',
+                        isShow: '='
+                    },
+                    link: function (scope, elem, attr, ctrl) {
+//                        scope.myName = "fdsfds"
+                        scope.toggle = function () {
+                            scope.isShow = scope.isShow == 'dhide' ? 'dshow' : 'dhide';
+                        }
+                    },
+                    controller: function ($scope, $element, $attrs) {
+                        this.showDeptName = $scope.showDeptName = function () {
+                            console.log($scope.dName);
+                        };
+                        this.getWorkers = function () {
+                            return [];
+                        };
+                    }
+                }
+            })
+            .directive('worker', function () {
+                return {
+                    restrict: 'E',
+                    replace: true,
+                    template: '<div style="border:1px solid #333"><div ng-click="toggle()" style="cursor:pointer;">{{myNickName}}:</div>' +
+                    '<div ng-class="isShow"><span>{{workerMsg.id}}</span><span>{{workerMsg.name}}</span><span>{{workerMsg.gender}}</span></div>' +
+                    '</div>',
+                    scope: {
+                        myNickName: '@',
+                        workerMsg: '='
+                    },
+                    require: '^?dept',
+                    link: function (scope, elem, attr, ctrl) {
+                        scope.isShow = 'hide';
+                        ctrl.showDeptName();
+                        ctrl.getWorkers();
+                        scope.toggle = function () {
+                            scope.isShow = scope.isShow == 'show' ? 'hide' : 'show';
+                        }
+                    }
+                }
+            })
+            .controller('ctrl', function ($scope, $http) {
+
+                $http.get('../AngularJS/10_data.json')
+                        .then(function (res) {
+                            $scope.workers = res.data;
+                            return res.data;
+                        })
+                        .then(function (data) {
+                            console.log(data);
+                        });
+
+
+            })
+</script>
+</html>

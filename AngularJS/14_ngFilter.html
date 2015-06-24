@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<div>
+    search :<br/>
+    <pre>ng-model="query.id" :</pre>
+    <input type="text" ng-model="query.id" placeholder="search by id"/>
+    <br/>
+    <pre>ng-model="query.name" :</pre>
+    <input type="text" ng-model="query.name" placeholder="search by name"/>
+    <br/>
+    <pre>ng-model="query" 和 ng-model="query.$" 效果一样：</pre>
+    <input type="text" ng-model="query" placeholder="search by All"/>
+    <input type="text" ng-model="query.$" placeholder="search by $"/>
+</div>
+
+<hr style="border: 1px solid #888"/>
+
+<table>
+    <caption>Users:</caption>
+    <tr ng-repeat="u in users | filter:query">
+        <td style="padding:1px 10px">{{u.id}}</td>
+        <td>{{u.name}}</td>
+    </tr>
+</table>
+
+</body>
+
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module('app', []);
+
+    app.controller('ctrl', function ($scope, $http) {
+        $http({url: '10_data.json', method: "GET"})
+                .success(function (data, status, header, config) {
+                    console.log(data);
+                    $scope.users = data;
+                });
+    });
+
+</script>
+</html>

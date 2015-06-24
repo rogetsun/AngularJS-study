@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="dialog" ng-controller="c">
+    <uv-table data-uv="fds">
+        <uv-head uv-head="heads"></uv-head>
+        <uvbody uv-data="data"></uvbody>
+    </uv-table>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+
+    var dialog = angular.module('dialog',[]);
+    dialog.controller('c',['$scope', '$http', function ($scope, $http) {
+        $http({url:"10_data.json",method:"GET"})
+                .success(function (dasta) {
+                    $scope.data = dasta;
+                });
+        $scope.heads = ['#','姓名']
+    }]);
+
+    dialog.directive('uvTable', function () {
+        return {
+            restrict:'E',
+            replace:false,
+            transclude:true,
+            scope:{
+
+            },
+            template:"<table ng-transclude></table>",
+            link: function (scope,elem,attr) {
+                console.log(elem.html());
+                console.log(attr)
+            }
+        }
+    })
+
+    dialog.directive('uvHead', function () {
+        return {
+            restrict:"E",
+            replace:true,
+            template:"<thead><th ng-repeat='head in uvHead'>{{head}}</th></thead>",
+            scope:{uvHead:"="}
+        }
+    });
+
+    dialog.directive('uvbody', function () {
+        return {
+            restrict:"E",
+            replace:true,
+            template:"<tbody><tr ng-repeat='data in uvData'><td ng-repeat='v in data'>{{v}}</td></tr></tbody>",
+            scope:{uvData:"="}
+        }
+    })
+
+
+</script>
+
+</html>

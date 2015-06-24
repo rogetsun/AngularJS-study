@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+
+<a href="" ui-sref="main">main</a>
+<a href="" ui-sref="main.sub1">sub1</a>
+<a href="" ui-sref="sub2">sub2</a>
+
+
+    <div ui-view=""></div>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    angular.module('app', ['ui.router'])
+            .config(function ($stateProvider, $urlRouterProvider) {
+                $urlRouterProvider.otherwise('/main');
+                $stateProvider
+                        .state('main', {
+                            url:'/main',
+                            template:'<div>hello angular {{title}}' +
+                            '<div ui-view=""></div></div>',
+                            controller: function ($scope) {
+                                $scope.title='test'
+                            }
+                        })
+                        .state('main.sub1', {
+                            url:'/sub1',
+                            template:'<div>sub1:{{title}}</div>',
+                            controller: function ($scope) {
+                                $scope.title = 'sub title test';
+                            }
+                        })
+                        .state('sub2', {
+                            url:'/sub2',
+                            template:'<div>sub2:{{title}}</div>',
+                            parent:'main',
+                            controller: function ($scope) {
+                                $scope.title = 'sub2 title test';
+                            }
+
+                        });
+            });
+</script>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+    <style>
+        * {
+            outline: none;
+        }
+    </style>
+</head>
+<body ng-app="app">
+
+<hr/>
+
+<input ng-model="dt" datepicker-popup="yyyy/MM/dd" is-open="opened" datepicker-mode="month" ng-click="opened=true"
+       close-text="关闭" datepicker-options="{showWeeks:false}" show-button-bar="true"
+       readonly>
+
+<hr/>
+<datepicker show-weeks="false" ng-model="dt"></datepicker>
+
+
+</datepicker>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/ui-bootstrap-tpls-0.12.0.js"></script>
+<script>
+    angular.module('app', ['ui.bootstrap.datepicker', 'ui.bootstrap.tpls'])
+            .config(function ($localeProvider, datepickerConfig, datepickerPopupConfig) {
+                console.log($localeProvider);
+
+//                        .DATETIME_FORMATS = {
+//                    MONTH: 'January,February,March,April,May,June,July,August,September,October,November,December'
+//                            .split(','),
+//                    SHORTMONTH: 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec'.split(','),
+//                    DAY: 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'.split(','),
+//                    SHORTDAY: 'Sun,Mon,周二,Wed,Thu,Fri,Sat'.split(','),
+//                    AMPMS: ['AM', 'PM'],
+//                    medium: 'MMM d, y h:mm:ss a',
+//                    short: 'M/d/yy h:mm a',
+//                    fullDate: 'EEEE, MMMM d, y',
+//                    longDate: 'MMMM d, y',
+//                    mediumDate: 'MMM d, y',
+//                    shortDate: 'M/d/yy',
+//                    mediumTime: 'h:mm:ss a',
+//                    shortTime: 'h:mm a'
+//                };
+                datepickerPopupConfig.showButtonBar = false;
+            })
+            .controller('ctrl', function ($scope) {
+
+            })
+</script>
+</html>

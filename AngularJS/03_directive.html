@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="MM">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        table.table tr td {
+            border: 1px solid #333333;
+            margin: 0;
+            padding: 4px;
+        }
+
+        table {
+            border-spacing: 0;
+        }
+    </style>
+</head>
+<body>
+<hello></hello>
+<table class="table">
+    <tr>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+    </tr>
+    <tr>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+        <td><hello></hello></td>
+    </tr>
+
+</table>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var mm = angular.module("MM", []);
+    mm.directive("hello", function () {
+        return {
+            restrict: "AE",
+            template: "<span>hello angularjs</span>",
+            replace: true
+        }
+    })
+</script>
+</html>

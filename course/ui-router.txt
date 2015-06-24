@@ -1,0 +1,34 @@
+基本使用
+
+多个state在同一个页面使用。
+
+激活一个state的三种方式：ui-sref使用以及href的使用，$state.go('state',{}),地址栏直接修改
+
+父子的state。
+    parent,a.b
+
+一个页面多个ui-views的使用
+
+子级或者多层子级指定父级视图。
+    views的名称其实是默认通过@指定为父级state。但是可以越级指定。
+
+抽象state
+    abstract:true
+
+绝对路由。
+    url:'^/list'
+
+带参数的url,两种方式：RESTful,?param
+    /contact/{cid}/:cname
+    /contact?cid&cname
+
+templateUrl，templateProvider
+
+controller,controllerAs,controllerProvider
+
+会继承给子状态的属性。
+    data,resolve
+
+scope只能通过最终模板替换完后的html结构继承。
+
+

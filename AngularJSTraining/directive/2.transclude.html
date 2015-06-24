@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app">
+
+<!-- directive:hello -->
+<div >
+    <div>
+        <h1>李天星：</h1>
+        <ul>
+            <li>体重：150kg</li>
+            <li>身高：150cm</li>
+        </ul>
+    </div>
+</div>
+</body>
+<script src="../assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module('app', []);
+    app.directive('hello', function () {
+        return {
+            restrict: "EACM",
+            replace: true,
+            transclude: true,
+            template: "<div><span>内容是：</span><span ng-transclude></span></div>",
+            link: function () {
+
+            }
+        }
+    });
+</script>
+</html>

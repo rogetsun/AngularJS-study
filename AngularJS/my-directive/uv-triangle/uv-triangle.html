@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+<hr/>
+<div uv-triangle>
+    <p>women</p>
+    <uv-triangle>e</uv-triangle>
+</div>
+
+</body>
+<script src="../../../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', ['uv.triangle']);
+
+    angular.module('uv.triangle', [])
+            .directive('uvTriangle', function () {
+                return {
+                    restrict: 'EA',
+                    replace: false,
+                    transclude: true,
+                    template: '<div style="position: relative; border: 1px solid #aaa; padding: 5px; margin:9px auto 9px;">' +
+                    '<span style="position: absolute; left: 30px; top: -16px; width: 0; height: 0; font-size: 0; border-width: 8px; border-style: dashed dashed solid dashed; border-color: transparent transparent #aaa; transparent;"></span>' +
+                    '<span style="position: absolute; left: 30px; top: -15px; width: 0; height: 0; font-size: 0; border-width: 8px; border-style: dashed dashed solid dashed; border-color: transparent transparent #FFF transparent;"></span>' +
+                    '<div style="position: relative;width:auto;height:auto;" ng-transclude></div>' +
+                    '</div>',
+                    link: function (scope, elem, attr, ctrl) {
+
+                    },
+                    controller: ['$scope', '$http', '$element', '$attrs', function ($scope, $http, $elem, $attr) {
+
+                    }]
+                }
+            });
+</script>
+</html>

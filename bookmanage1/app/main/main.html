@@ -1,0 +1,12 @@
+<div class="am-container am-g">
+    <div class="am-u-sm-3" ui-view="left" style="border:0px solid #333;">
+        <ul>
+            <li ng-repeat="s in ss">
+                <a ui-sref="{{s.state}}" ui-sref-active="active">{{s.title}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="am-u-sm-9" ui-view="" style="border:0px solid #333;">
+        content
+    </div>
+</div>

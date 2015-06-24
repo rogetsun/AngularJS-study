@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>AngularJS</title>
+    <script src="assets/angular/angular.js"></script>
+    <style>
+        table{
+            border:1px solid #2aabd2;
+            border-spacing: 0;
+        }
+        table thead th{
+            font-weight: bold;
+
+        }
+        td,th{
+            border:1px solid #2aabd2;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body ng-controller="Ctrl">
+<button ng-click="getData(title)">get</button>
+<br/><br/>
+<table>
+    <thead>
+        <th>#</th>
+        <th>name</th>
+        <th>op</th>
+    </thead>
+    <tbody>
+        <tr ng-repeat="u in users">
+            <td>{{u.id}}</td>
+            <td>{{u.name}}</td>
+            <td>
+                <a ng-click="showMe(u)" href="">showMe</a>
+                /
+                <a ng-click="change(u)" href="">change</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br/>
+<div>
+    id:<input ng-model="tmpUser.id">
+    name:<input ng-model="tmpUser.name" />
+</div>
+</body>
+<script>
+    var app = angular.module("App",[]);
+
+    app.controller("Ctrl",["$scope",'$http', 'myService',function($scope,$http, ms){
+
+        $scope.title = "test";
+        $scope.tmpUser = {};
+        $scope.getData = function(){
+            $http({
+                method:"get",
+                url:"10_data.json"
+            }).success(function(data,status,headers,config){
+                $scope.users = data;
+            }).error(function(data,status){
+                console.log("error");
+            });
+        };
+        ms.users.then(function (d) {
+            $scope.users = d;
+
+            return {
+                id:'fuck'
+            }
+        }).then(function (d) {
+            console.log(d)
+        });
+
+        $scope.showMe = function (u) {
+            console.log(JSON.stringify(u));
+        };
+
+        $scope.change = function (u) {
+            $scope.tmpUser = u;
+        };
+
+    }]);
+
+    app.service("myService", function ($http) {
+        return {
+            users:$http.get("10_data.json")
+                    .then(function (res) {
+                        console.log(11111);
+                        return res.data;
+                    })
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<test-direc attr-object="attr" output="out(attr)"></test-direc>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    /**
+     * 第一种方式：
+     *      指令内部如果需要调用服务，则通过controller的scrop作为属性给到指令内部。
+     *      可行。
+     * 第二种方式：
+     *      定义指令时，是可以注入服务的。见20_direc_call_service2.html。
+     *
+     */
+    angular.module('app', [])
+            .controller('ctrl', function ($scope, testService) {
+                $scope.ts = testService;
+                $scope.attr = {
+                    id: '1', name: 'name title1'
+                };
+                $scope.out = function (a) {
+                    console.log(a);
+                };
+                $scope.$watch('attr', function (n, o) {
+                    console.log(JSON.stringify(o) + '---->' + JSON.stringify(n));
+                }, true);
+            })
+            .service('testService', function () {
+                this.find = function (name) {
+                    console.log(this.serviceName + ': find :' + name);
+                    return this.serviceName + ': find :' + name;
+                };
+                this.serviceName = 'testService';
+            })
+            .directive('testDirec', ['testService', function (testService) {
+                return {
+                    restrict: 'EA',
+                    template: '<div class="panel panel-warning">' +
+                    '<div class="panel-heading">{{name}}</div>' +
+                    '<div class="panel-body">' +
+                    '<input type="text" ng-model="name">' +
+                    '<a ng-click="findMe(name)" href="">findMe</a>' +
+                    '<hr/>{{content}}' +
+                    '</div>' +
+                    '</div>',
+                    scope: {
+                        attrObject: '=',
+                        output: '&'
+                    },
+                    link: function (scope, elem, attr) {
+                        scope.name = testService.serviceName;
+                        scope.findMe = function (name) {
+                            scope.content = testService.find(name);
+                            scope.attrObject = {
+                                id: 'd1', name: 'dname1'
+                            };
+//                            scope.output();
+                        }
+                    }
+                }
+            }]);
+</script>
+</html>

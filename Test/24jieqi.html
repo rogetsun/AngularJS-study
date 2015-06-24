@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="container">
+    <div class="panel panel-success">
+        <div class="panel-heading">二十四节气</div>
+        <div class="panel-body">
+            年: <input type="text" ng-model="year"/>
+            节气:<select ng-model="num" ><option ng-repeat="n in jq" value="{{$index}}">{{n}}</option></select>
+            <button class="btn btn-primary" ng-click="caculation()">计算</button>
+            <hr/>
+            结果：<span>{{date}}</span>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                $scope.sTermInfo = [0, 21208, 42467, 63836, 85337, 107014, 128867, 150921, 173149, 195551, 218072, 240693, 263343, 285989, 308563, 331033, 353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758];
+
+                //===== 某年的第n个节气为几日(从0小寒起算)
+                $scope.sTerm = function (y, n) {
+                    console.log(n);
+                    var l = ( 31556925974.7 * (y - 1900) + $scope.sTermInfo[n] * 60000 ) + Date.UTC(1900, 0, 6, 2, 5);
+                    console.log(l);
+                    var offDate = new Date(l);
+                    console.log(y + '的 ' + $scope.jq[n] + '是：' + offDate.toUTCString()+","+offDate.toString()+','+offDate.toLocaleString());
+                    return (offDate.getUTCDate());
+                };
+
+                $scope.jq = '小寒,大寒,立春,雨水,惊蛰,春分,清明,谷雨,立夏,小满,芒种,夏至,小暑,大暑,立秋,处暑,白露,秋分,寒露,霜降,立冬,小雪,大雪,冬至'.split(',')
+
+                $scope.caculation = function () {
+                    $scope.date = $scope.sTerm($scope.year, $scope.num);
+                }
+            });
+</script>
+</html>

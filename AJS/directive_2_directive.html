@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<accordin as="accordins">
+    <item ng-repeat="i in accordins" item="i">
+        {{i.content}}
+        <hr/>
+        oon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim
+        keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
+        butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic
+
+    </item>
+</accordin>
+
+</body>
+<script src="assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope, $http) {
+                $scope.accordins = [
+                    {title: 'title1', content: 'content1'},
+                    {title: 'title2', content: 'content2'},
+                    {title: 'title3', content: 'content3'},
+                    {title: 'title4', content: 'content4'},
+                    {title: 'title5', content: 'content5'},
+                    {title: 'title6', content: 'content6'},
+                    {title: 'title7', content: 'content7'},
+                    {title: 'title8', content: 'content8'},
+                    {title: 'title9', content: 'content9'}
+                ];
+            })
+            .directive('accordin', function () {
+                return {
+                    restrict: 'E',
+                    template: '<div ng-transclude></div>',
+                    transclude: true,
+                    link: function (scope, elem, attrs) {
+
+                    },
+                    scope: {
+                        as: '='
+                    },
+                    controller: function ($scope, $element, $attrs) {
+
+                        this.closeLast = function (a) {
+
+                            $scope.lastItem &&
+                            a.title != $scope.lastItem.title &&
+                            ($scope.lastItem.isShow = false);
+                            $scope.lastItem = a;
+
+                        };
+
+                        this.togClass = function (i) {
+                            i && ( i.isShow = !i.isShow );
+                        }
+                    }
+                }
+            })
+            .directive('item', function () {
+                return {
+                    restrict: 'E',
+                    replace: true,
+                    scope: {
+                        item: '='
+                    },
+                    template: '<div style="border:1px solid #333;">' +
+                    '<div ng-click="toggle(item)">title</div>' +
+                    '<div ng-show="item.isShow" ng-transclude>content</div>' +
+                    '</div>',
+                    transclude: true,
+                    require: '^?accordin',
+                    link: function (scope, elem, attrs, ctrl) {
+
+                        scope.toggle = function (item) {
+                            ctrl.closeLast(item);
+                            ctrl.togClass(item);
+                        }
+                    }
+                }
+            });
+</script>
+</html>

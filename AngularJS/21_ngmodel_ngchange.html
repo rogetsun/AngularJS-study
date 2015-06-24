@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<select ng-model="obj" ng-options="o.name for o in array" ng-change="change(obj)"></select>
+
+<input ng-model="idx" ><button class="btn btn-warning" ng-click="goto(idx)">change</button>
+
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope, $http) {
+                $scope.obj = {};
+                $scope.idx = 0;
+                $scope.change = function (o) {
+                    console.log(o);
+                };
+                $http.get('../assets/data.json').then(function (res) {
+                    $scope.array = res.data;
+                });
+
+                $scope.goto = function (idx) {
+                    $scope.obj = $scope.array[idx];
+                    console.log(idx || 1);
+                }
+
+            })
+
+</script>
+</html>

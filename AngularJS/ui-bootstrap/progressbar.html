@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl" class="container">
+
+<div class="col-sm-6 col-sm-offset-3">
+    <div class="panel panel-danger">
+        <div class="panel-heading">进度条测试</div>
+        <div class="panel-body">
+            <div class="col-md-11" style="padding:5px 0;">
+                <progressbar value="50" type="danger" style="height: 4px;"></progressbar>
+            </div>
+            <h6 class="col-sm-1">50%</h6>
+            <progressbar class="progress-striped"  value="22" type="warning">22%</progressbar>
+            <progressbar class="progress-striped active" max="200" value="166"><i>166 / 200</i>
+            </progressbar>
+            <progressbar class="progress-striped active progress-bar-success" max="200" value="166"><i>166 / 200</i>
+            </progressbar>
+
+
+
+            <progress max="400">
+                <bar value="50">50</bar>
+                <bar value="30">30</bar>
+                <bar value="20">20</bar>
+                <bar value="30">30</bar>
+            </progress>
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/ui-bootstrap-tpls-0.12.0.js"></script>
+<script>
+    angular.module('app', ['ui.bootstrap.progressbar', 'ui.bootstrap.tpls'])
+            .controller('ctrl', function ($scope) {
+
+            })
+</script>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="c">
+    <div uv-name="{{name}}" uv-attr="{{name}}" ></div>
+    <div uv-name="name" uv-attr="name"></div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module('app',[]);
+    app.controller('c',['$scope', function ($scope) {
+        $scope.name='abc';
+    }]);
+
+    app.directive('uvName',['$http', function ($http) {
+        return {
+            restrict:"A",
+            scope:{
+                uvAttr:"="
+            },
+            controller: function ($scope) {
+            },
+            link: function (scope, iElement, iAttrs, controller) {
+                console.log(scope);
+            }
+        }
+    }]);
+</script>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<table>
+    <tr ng-repeat="u in users.data">
+        <td>{{u.id}}</td>
+        <td>{{u.name}}</td>
+        <td>{{u.gender}}</td>
+
+    </tr>
+</table>
+
+</body>
+<script src="assets/angular/angular.js"></script>
+<script src="service.js"></script>
+<script>
+    angular.module('app', ['myService'])
+            .controller('ctrl', ['$scope', '$timeout', 'getUserService',
+                'getUserService2',
+                'getUserFactory',
+                'getUserFactory2',
+                function ($scope, $timeout, gus, gus2, guf, gup) {
+//                    gus.getUser().then(function (data) {
+//                        $scope.users = data;
+//                    });
+                    gus.getUser().then(function () {
+                        console.log("#########"+gus.userList.data);
+//                        $scope.users = gus.userList;//可用
+                    });
+                    $scope.users = gus.userList;//没用
+                    $timeout(function () {
+//                        $scope.users = gus.userList;//有用
+                    }, 1000);
+                    gus2.getUser();
+                    guf.getUser();
+                    gup.getUser();
+                }
+            ]);
+
+
+</script>
+</html>

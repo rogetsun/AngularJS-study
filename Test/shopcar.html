@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<input ng-model="goods.goods_id">
+<input ng-model="goods.name">
+<input ng-model="count">
+<a ng-click="add(goods, count)" class="btn btn-success glyphicon-arrow-left">add</a>
+<a ng-click="del(goods, count)" class="btn btn-danger">del</a>
+<a ng-click="clear()" class="btn btn-warning">clear</a>
+<a ng-click="get()" class="btn btn-info">get</a>
+<pre>
+
+    {{ga|json}}
+
+</pre>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script src="shopcar-service.js"></script>
+<script>
+    angular.module('app', ['df.service.shopcar'])
+            .controller('ctrl', function ($scope, shopcar) {
+                $scope.goods = {};
+                $scope.count = 1;
+
+                $scope.ga = [];
+
+                $scope.add = function (goods, count) {
+                    shopcar.addGoods(goods, count);
+                };
+
+                $scope.del = function (g, c) {
+                    shopcar.deleteGoods(g,c);
+                };
+
+                $scope.clear = function () {
+                    shopcar.clearShopCar();
+                };
+
+                $scope.get = function () {
+                    $scope.ga = shopcar.getGoodsArray();
+                }
+
+            });
+
+</script>
+</html>

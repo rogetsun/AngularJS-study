@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>获取json格式文本信息</title>
+    <style>
+        table, th, td {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+            text-align: center;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .ww {
+            cursor: not-allowed;
+            disabled： "true";
+        }
+
+        ul, li {
+            list-style-type: none;
+            display: inline;
+        }
+    </style>
+    <script src="../assets/angular/angular.js"></script>
+</head>
+
+<body ng-app="app" ng-controller="ctrl">
+<div>
+    <input type="text" placeholder="查询" ng-model="vm.searchText.$"/>
+    <input ng-model="vm.searchText.id" placeholder="Id查询">
+    <br>
+    <input ng-model="vm.searchText.name" placeholder="Name查询">
+    <input ng-model="vm.searchText.age" placeholder="Age查询">
+    <br>
+    <table width="100%">
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>age</th>
+            <th colspan="2">操作</th>
+        </tr>
+        <tr ng-repeat="p in vm.persons |filter: vm.searchText | offset: vm.currentPage*vm.size | limitTo: vm.size track by p.id">
+            <td>{{p.id}}</td>
+            <td>{{p.name}}</td>
+            <td>{{p.age}}</td>
+            <td><a href="" ng-click="vm.del(p)"> 删除</a>
+            </td>
+            <td><a href="" ng-click="vm.modify(p)"> 修改</a>
+            </td>
+        </tr>
+    </table>
+    <button ng-click="vm.homePage()">首页</button>
+    <button ng-click="vm.prevPage()" ng-class="ww">上页</button>
+    <!--<span  ng-repeat="s in vm.pageSizes">-->
+			<span ng-repeat="s in vm.range(vm.persons)">
+                <a href="" ng-click="vm.page(s)">{{s+1}}</a>&nbsp;
+            </span>
+    <button ng-click="vm.nextPage()">下页</button>
+    <button ng-click="vm.lastPage()">尾页</button>
+</div>
+<script type="text/javascript">
+    var app = angular.module("app", ["app2"]);
+    var vm;
+    app.controller("ctrl", ["$scope", "$http", function ($scope, $http) {
+        vm = $scope.vm = {};
+        vm.persons = [];
+        vm.size = 5;
+        vm.currentPage = 0;
+        vm.pageSizes = [];
+        $http.get("data.json")
+                .then(function (res) {
+                    //alert("success:"+data);
+                    vm.persons = res.data;
+                    return res.data;
+                }, function (res) {
+                    console.log(111);
+                    return {"a": 123};
+                })
+//							.then(function (data) {
+//								for (var i=0;i<Math.ceil(data.length/vm.size);i++) {
+//									vm.pageSizes.push(i);
+//								}
+//							});
+
+        vm.range = function (persons) {
+            //	alert("#########")
+            //	alert(Math.ceil(vm.persons.length/vm.size))
+            //	if(vm.pageSizes.length==0){
+            console.log("########@@@@@@@@@@@@###" + persons);
+            console.log(vm.isRange)
+            if (!vm.isRange && persons && persons.length> 0) {
+                console.log("persons"+persons);
+                for (var i = 0; i < Math.ceil(persons.length / vm.size); i++) {
+                    vm.pageSizes.push(i);
+                }
+                vm.isRange = true;
+            }
+
+            //	}
+            //	alert(vm.pageSizes)
+            //	alert(JSON.stringify(vm))
+            console.log(vm.pageSizes);
+            return vm.pageSizes;
+        }
+
+        vm.page = function (p) {
+            vm.currentPage = p;
+        }
+        vm.homePage = function () {
+            if (vm.currentPage > 0) {
+                vm.currentPage = 0;
+            }
+        }
+        vm.prevPage = function (button) {
+            if (vm.currentPage > 0) {
+                vm.currentPage = vm.currentPage - 1;
+            } else {
+                alert("超了");
+            }
+        }
+        vm.nextPage = function () {
+            if (vm.currentPage < Math.ceil(vm.persons.length / vm.size) - 1) {
+                vm.currentPage = vm.currentPage + 1;
+            } else {
+                alert("超了")
+            }
+        }
+        vm.lastPage = function () {
+            var pageSizes = Math.ceil(vm.persons.length / vm.size);
+            vm.currentPage = parseInt(pageSizes) - 1;//  在过滤器那里slice是根据数组下标显示的
+        }
+
+        vm.del = function (p) {
+            //alert(JSON.stringify(vm.persons))
+            var oldPersons = vm.persons;
+            vm.persons = [];
+            angular.forEach(oldPersons, function (oldPerson) {
+                if (oldPerson != p) {
+                    vm.persons.push(oldPerson);
+                }
+//						vm.persons.splice(p,1);
+            });
+            vm.range(vm.persons);
+        }
+
+
+    }]);
+    app.filter('offset', function () {
+        return function (persons, start) {
+            start = parseInt(start);
+            return persons.slice(start);
+        };
+    });
+
+    var app2 = angular.module("app2", []);
+</script>
+</body>
+
+</html>

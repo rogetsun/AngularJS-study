@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+    <div ui-view>
+        <div>hello angular</div>
+    </div>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    angular.module('app',['ui.router'])
+            .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+
+                $urlRouterProvider.otherwise("/main1");
+
+                $stateProvider.state('main', {
+                    url:'/main',
+                    template:'<div>{{title}}</div>',
+                    controller:['$scope', function ($scope) {
+                        $scope.title = 'hello my angular';
+                    }]
+                });
+            }]);
+</script>
+</html>

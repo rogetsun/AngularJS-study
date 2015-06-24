@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-controller="Ctrl">
+    <hello>
+        <div><table><thead><th>ffds</th><th>dddddd</th></thead></table></div>
+    </hello>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    /**
+     * directive的HTMLDom对象内部的html元素会经过编译后，
+     * 放在directive代码的模板中的有ng-transclude属性的元素内部。
+     * transclude两种取值：
+     *      1、true，编译以后还带指令Dom对象
+     *      2、'element'，编译后不带Directive的dom对象。
+     *
+     * 本例子中编译后两种取值分别对应的html代码如下：
+     *      1、true情况：
+     *          <div> template
+     *              <span ng-transclude="">
+     *                  <div class="ng-scope">dddddd</div>
+     *              </span>
+     *          </div>
+     *      2、element情况：
+     *          <div> template
+     *              <span ng-transclude="">
+     *                  <hello class="ng-scope">
+     *                      <div>dddddd</div>
+     *                  </hello>
+     *              </span>
+     *          </div>
+     */
+    /**
+     *
+     * @type {module|*}
+     */
+    var app = angular.module("App",[]);
+    app.controller("Ctrl",["$scope", function ($scope) {
+        $scope.name="title";
+    }]);
+    app.directive("hello", function () {
+        return {
+            restrict:"AE",
+            template:'<div> template<span ng-transclude></span></div>',
+            link: function ($scope) {
+            },
+            replace:true,
+            transclude:'element'
+        }
+    })
+</script>
+</html>

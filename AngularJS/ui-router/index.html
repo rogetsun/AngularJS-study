@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+
+<nav class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+        <li ui-sref-active="active">
+            <a href="" ui-sref="index({t_id:1})">t1</a>
+        </li>
+        <li ui-sref-active="active">
+            <a href="" ui-sref="index({t_id:2})">t2</a>
+        </li>
+        <li ui-sref-active="active">
+            <a href="" ui-sref="index({t_id:3})">t3</a>
+        </li>
+
+    </ul>
+</nav>
+
+<ui-view></ui-view>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    angular.module('app', ['ui.router'])
+            .config(function ($stateProvider, $urlRouterProvider) {
+//                $urlRouterProvider.otherwise('/index/default');
+                $stateProvider
+                        .state('index', {
+                            url: '/index/{t_id}',
+                            templateProvider: function ($stateParams) {
+                                console.log($stateParams);
+                                return '<div>' + $stateParams.t_id + '</div>' +
+                                        '<div><a href="" ui-sref="index.product">product</a></div>' +
+                                        '<nav class="navbar navbar-inverse"><ul class="nav navbar-nav">' +
+                                        '<li ui-sref-active="active">' +
+                                        '<a href="" ui-sref="index.product({t_id:1})">t1</a>' +
+                                        '</li>' +
+                                        '<li ui-sref-active="active">' +
+                                        '<a href="" ui-sref="index.product({t_id:2})">t2</a>' +
+                                        '</li>' +
+                                        '<li ui-sref-active="active">' +
+                                        '<a href="" ui-sref="index.product({t_id:3})">t3</a>' +
+                                        '</li>' +
+                                        '</ul></nav>' +
+                                        '<div ui-view=""></div>'
+                            },
+                            controller: function ($scope, $state) {
+                                //$state.go('index.product',{t_id:1});
+                            }
+                        })
+                        .state('index.product', {
+                            url: '/product',
+                            template: '<div>i am product ,t_id={{t_id}}</div>',
+                            controller: function ($scope, $stateParams) {
+                                console.log($stateParams);
+                                $scope.t_id = $stateParams.t_id;
+                            },
+                            reload: true
+                        })
+            })
+</script>
+</html>

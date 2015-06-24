@@ -1,0 +1,8 @@
+<table ng-controller="bookCtrl" class="table table-bordered table-striped">
+    <tr ng-repeat="book in books | filter:query">
+        <td>{{book.id}}</td>
+        <td>{{book.name}}</td>
+        <td>{{book.type}}</td>
+        <td><a href="" ng-click="show(book)">showme</a></td>
+    </tr>
+</table>

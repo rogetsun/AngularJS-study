@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div ng-controller="Ctrl">
+    第一种@绑定方式测试：<br/>
+    <input type="text" ng-model="myFlower">
+    <hello flower="{{myFlower}}"></hello>
+</div>
+<br/><br/>
+<div ng-controller="Ctrl2">
+    第二种@绑定方式测试：<br/>
+    ngController:<br/>
+    <input type="text" ng-model="flower.id"/><br/>
+    <input type="text" ng-model="flower.name"/><br/>
+    directive:
+    <hello2 my-flower="flower" ></hello2>
+</div>
+
+<div ng-controller="Ctrl3" >
+    第三种&绑定方式： <br/>
+    ngController:<br/>
+    <input type="text" ng-model="flower.id"><br/>
+    <input type="text" ng-model="flower.name"><br/>
+    directive:
+    <flower my-flower="flower" sell-flower="sellFLower(f,s)" ></flower>
+</div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var app = angular.module("App", []);
+    /**
+     * 指令directive中的scope 有3中绑定方式。
+     * 1、@符号绑定，表示从当前directive的attr属性中去取得。
+     *      需要在指令的dom对象上用属性绑定上层控制器的$scope的属性。
+     *      此种方式一般仅仅适用于字符串的传递绑定。
+     *      非双向绑定
+     *
+     * 2、=符号绑定，表示从父scope中集成属性。
+     *      也需要在directive的htmldom上通过属性绑定，directive内部再次用=号。
+     *      与@符号绑定的区别在于=方式可以绑定json对象，@只能是字符串。另外=为双向绑定。@只做字符串传递给directive。
+     *
+     * 3、&符号绑定，用于将控制器中的方法传递到directive中。指令中调用，并传入模板已指定参数。
+     *      此方式在directive的HTMLdom通过属性将controller的$scope中的方法传递到directive时，需要注意给参数名方式。
+     *      在directive模板用ng-click调用时传入入参为json格式，同时json的key要和dom中的参数名称一致。
+     *      如：
+     *          dom属性：
+     *              sell="sellFLower(f,s)"
+     *          directive模板：
+     *              ng-click='sell({f:flower,s:seller})'
+     *
+     *      dom中sellFlower的2个参数名称是(f,s)，那么ng-click中的参数json对象的key就是{f:xxx,s:xxx}
+     *      当然取值可以是通过绑定获取到的controller中的，也可以是directive内部生成的ng-model
+     *
+     * 注意：
+     *      当directive的js代码创建时，如果scope对象中的key为java命名规范，则directive的dom对象上的属性书写需要用-号。
+     *      如第二种绑定方式。
+     *      且AngularJS中都遵守此方式。如ng-controller是dom属性，ngController为js库中的对象。
+     *
+     * 核心注意事项：
+     *      指令的scope的三中绑定方式核心都是通过directive的属性在做。
+     *      在命名时，有两种方式：
+     *          1、directive中的scope的key值可以和directive的dom对象属性保持一致。
+     *              属性使用大写转减号的方式。scope使用java命名规范。
+     *              eg：
+     *                  属性：my-flower="flower"
+     *                  scope={myFlower:"="}
+     *          2、也可以不一致。
+     *              eg：
+     *                  属性：my-flower="flower"
+     *                  scope={flower:"=myFLower"}
+     *
+     *      推荐使用第一种方式，因为webstorm可以做提示。
+     */
+
+
+    /**
+     * @符号字符串传递绑定方式
+     * */
+    app.controller("Ctrl", ["$scope", function ($scope) {
+        $scope.myFlower = "百合";
+    }]);
+
+    app.directive("hello", function () {
+        return {
+            restrict: "E",
+            scope: {
+                flower: "@"
+            },
+            template: '<div><input type="text" ng-model="flower" >{{flower}}</div>',
+            link: function (scope, elem, attr) {
+
+            }
+        }
+    });
+
+    /**
+     * =符号双向绑定方式
+     */
+    app.controller("Ctrl2", ["$scope", function ($scope) {
+        $scope.flower={
+            name:"百合",
+            id:1
+        }
+    }]);
+
+    app.directive("hello2", function () {
+        return {
+            restrict: "E",
+            scope: {
+                myFlower: "="
+            },
+            template: '<div><input type="text" ng-model="myFlower.id" ><br/>' +
+                    '<input type="text" ng-model="myFlower.name" ><br/>{{flower}}</div>',
+            link: function (scope, elem, attr) {
+
+            }
+        }
+    });
+
+    /**
+     * &绑定方法方式
+     */
+    app.controller("Ctrl3",["$scope", function ($scope) {
+        $scope.sellFLower = function (flower,seller) {
+            console.log(seller+" sells "+JSON.stringify(flower));
+        }
+        $scope.flower = {
+            name:"百合",
+            id:1
+        }
+    }]);
+
+    app.directive("flower", function () {
+        return {
+            restrict: "E",
+            template: "<div><input type='text' ng-model='seller'/></div>" +
+                    "<div><button ng-click='sellFlower({f:flower,s:seller})'>sell</button></div>" +
+                    "<div>{{flower}}</div>",
+            scope:{
+                sellFlower:"&",
+                flower:"=myFlower"
+            }
+
+        }
+    })
+
+</script>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app">
+
+<div>
+    <input ng-model="d.msg" >
+    <div>{{d.msg}}</div>
+</div>
+<hr/>
+
+<div ng-controller="ctrl1">
+    <input ng-model="d.msg" >
+    <div>{{d.msg}}</div>
+</div>
+<hr/>
+<div ng-controller="ctrl2">
+    <input ng-model="d.msg">
+    <div>{{d.revMsg()}}</div>
+</div>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+
+    var app = angular.module('app',['dataService']);
+
+    app.controller('ctrl1', ['$scope', 'data', function ($scope, data) {
+        $scope.d = data;
+    }]);
+
+    app.controller('ctrl2', ['$scope', 'data', function ($scope, data) {
+        $scope.d = data;
+        $scope.d.revMsg = function () {
+            return $scope.d.msg.split("").reverse().join("");
+        };
+    }]);
+
+    var app2 = angular.module('dataService',[]);
+    app2.service('data', function () {
+        return {msg:'service data'}
+    });
+</script>
+
+</html>

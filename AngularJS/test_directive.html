@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+<input ng-model="search">
+<uv-table data="data" heads="['#','姓名'] " show-key="['id','name']" show-data="showData()" search-person="search"></uv-table>
+
+<ul >
+    <li ng-repeat="p in data"><span ng-repeat="k in p">{{k}}</span></li>
+</ul>
+
+
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+
+    var app = angular.module('myApp',['uvDataGridMod']);
+    app.controller('myCtrl',['$scope','$http', function ($scope, $http) {
+        $http({
+            url:"10_data.json",method:"GET"
+        }).success(function (data, status, header, config) {
+            $scope.data = data;
+            console.log('http over');
+
+        });
+
+        $scope.showData = function () {
+            console.log('showdata');
+            console.log($scope.data);
+        }
+    }]);
+
+    var uvDataGridMod = angular.module('uvDataGridMod',[]);
+
+    uvDataGridMod.directive('uvTable', function () {
+        return {
+            restrict:"E",
+            template:"<table>" +
+            "<thead>" +
+            "<th ng-repeat='h in heads'>{{h}}<i ng-if='h==\"id\"'>`</i></th>" +
+            "</thead>" +
+            "<tbody >" +
+            "<tr ng-repeat='row in data | filter:searchPerson' ng-mouseenter='log(row)'>" +
+            "<td ng-repeat='k in row'>{{k}}</td>" +
+            "</tr>" +
+            "</tbody>" +
+            "</table>",
+            scope:{
+                heads:"=",
+                data:"=",
+                keys:"=showKey",
+                showData:"&",
+                searchPerson:"="
+            },
+            link: function (scope, elem, attr) {
+                scope.log = function (d) {
+                    console.log(d);
+                }
+            },
+            replace:true,
+            transclude: true
+        }
+    });
+
+    var uvTool = angular.module('uvTool',[]);
+
+    uvTool.service('uvDialog', function () {
+        return {
+
+        }
+    })
+
+
+</script>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<uv-event-test uv-name="Event">
+    <uv-event-test uv-name="Event-1">
+        <uv-event-test uv-name="Event-1-1"></uv-event-test>
+        <uv-event-test uv-name="Event-1-2"></uv-event-test>
+    </uv-event-test>
+    <uv-event-test uv-name="Event-2">
+        <uv-event-test uv-name="Event-2-1"></uv-event-test>
+        <uv-event-test uv-name="Event-2-2"></uv-event-test>
+    </uv-event-test>
+</uv-event-test>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                $scope.event = {
+                    up: 'up',
+                    down: 'down'
+                };
+
+
+                $scope.$on('click', function () {
+                    console.log('################################');
+                    console.log('app:catch:click');
+                    console.log('arguments.length:' + arguments.length);
+                    syso(arguments);
+                    console.log('################################');
+                });
+
+                $scope.$on($scope.event.up, function () {
+                    console.log('################################');
+                    console.log('app:catch:up');
+                    console.log('arguments.length:' + arguments.length);
+                    syso(arguments);
+                    console.log('################################');
+                });
+
+                $scope.$on($scope.event.down, function () {
+                    console.log('################################');
+                    console.log('app:catch:down');
+                    console.log('arguments.length:' + arguments.length);
+                    syso(arguments);
+                    console.log('################################');
+                });
+
+                var syso = function (arr) {
+                    console.log("syso*****begin")
+                    var i = 0;
+                    angular.forEach(arr, function (a) {
+                        console.log((i++) + ':');
+                        console.log(a);
+                    });
+                    console.log("syso*****end")
+                };
+
+            })
+            .directive('uvEventTest', function () {
+                return {
+                    restrict: 'EA',
+                    replace: true, transclude: true,
+                    template: '<div class="panel panel-danger" >' +
+                    '<div class="panel-heading">{{uvName}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '   <span class="btn btn-danger btn-sm" ng-click="upEvent($event)">up</span>&nbsp;&nbsp;&nbsp;' +
+                    '   <span class="btn btn-success btn-sm" ng-click="downEvent($event)">down</span>' +
+                    '   <span class="btn btn-warning btn-xs"><label class="checkbox-inline"><input type="checkbox" ng-model="preventUp">prevent-up</label></span>' +
+                    '   <span class="btn btn-warning btn-xs"><label class="checkbox-inline"><input type="checkbox" ng-model="preventDown">prevent-down</label></span>' +
+                    '   <span class="btn btn-warning btn-xs"><label class="checkbox-inline"><input type="checkbox" ng-model="stopUp">stop-up</label></span>' +
+                    '   <span class="btn btn-warning btn-xs"><label class="checkbox-inline"><input type="checkbox" ng-model="stopDown">stop-down</label></span>' +
+                    '</div>' +
+                    '<div class="panel-body" ng-transclude>' +
+                    '</div>' +
+                    '</div>',
+                    scope: {
+                        uvName: '@'
+                    },
+                    link: function (scope) {
+
+                        scope.upEvent = function (e) {
+                            syso(arguments);
+                            scope.$emit('up', {uvName: scope.uvName, event: e});
+                            scope.$emit(e);
+                        };
+                        scope.downEvent = function (e) {
+                            syso(arguments);
+                            scope.$broadcast('down', {uvName: scope.uvName, event: e});
+                        };
+
+                        scope.$on('up', function () {
+                            console.log('################################');
+                            console.log(scope.uvName + ':catch:up');
+                            console.log('arguments.length:' + arguments.length);
+                            syso(arguments);
+                            eventDeal('up', arguments[0]);
+                            console.log('################################');
+                        });
+                        scope.$on('down', function () {
+                            console.log('################################');
+                            console.log(scope.uvName + ':catch:down');
+                            console.log('arguments.length:' + arguments.length);
+                            syso(arguments);
+                            eventDeal('down', arguments[0]);
+                            console.log('################################');
+                        });
+
+                        var syso = function (arr) {
+                            console.log("syso*****begin")
+                            var i = 0;
+                            angular.forEach(arr, function (a) {
+                                console.log((i++) + ':');
+                                console.log(a);
+                            });
+                            console.log("syso*****end")
+                        };
+
+                        var eventDeal = function (en, e) {
+                            if (en === 'up') {
+                                if (scope.preventUp) {
+                                    console.log('preventUp');
+                                    e.preventDefault();
+                                }
+                                if (scope.stopUp) {
+                                    console.log('stopUp');
+                                    e.stopPropagation();
+                                }
+                            } else if (en === 'down') {
+                                if (scope.preventDown) {
+                                    console.log('preventDown');
+                                    e.preventDefault();
+                                }
+                                if (scope.stopDown) {
+                                    console.log('stopDown');
+                                    e.stopPropagation();
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+            })
+</script>
+</html>

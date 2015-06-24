@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="assets/angular/angular.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+    <form name="myForm" >
+        <input type="email"  ng-model="tel" required >
+        <button  ng-disabled="myForm.$invalid" >submit</button>
+    </form>
+</body>
+<script>
+    var a = angular.module('app',[]);
+    a.controller('ctrl',['$scope', function ($scope) {
+
+    }]);
+
+</script>
+</html>

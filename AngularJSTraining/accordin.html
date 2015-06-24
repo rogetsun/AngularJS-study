@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-app="app" ng-controller="myCtrl">
+    <accordin acc="accordins"></accordin>
+</body>
+<script src="assets/angular/angular.min.js"></script>
+<script>
+    var a = angular.module('app',[]);
+    a.directive('accordin', function () {
+        return {
+            restrict:"E",
+            replace:true,
+            template:
+            "<div ng-style='{width:\"600px\"}'>" +
+            "   <div ng-repeat='a in acc'>" +
+            "       <div ng-click='toggleMe(a)'>{{a.title}}</div>" +
+            "       <div ng-show='a.isShow'>{{a.content}}</div>" +
+            "   </div>" +
+            "</div>",
+            scope:{acc:"="},
+            link: function (scope, elem, attr, controller) {
+                scope.toggleMe = function (a) {
+
+                    angular.forEach(scope.acc, function (a) {
+                        a.isShow = false;
+                    });
+                    a.isShow = !a.isShow;
+                }
+            }
+        }
+    });
+    a.controller('myCtrl',['$scope', function ($scope) {
+        $scope.accordins = [
+            {title:'title1',content:'content1'},
+            {title:'title2',content:'content2'},
+            {title:'title3',content:'content3'},
+            {title:'title4',content:'content4'},
+            {title:'title5',content:'content5'}
+        ];
+    }]);
+</script>
+</html>

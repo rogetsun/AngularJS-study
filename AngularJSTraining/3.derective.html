@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="assets/angular/angular.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<litx name="abc"></litx>
+
+</body>
+    <script>
+        var myApp = angular.module("app",[]);
+        myApp.controller("ctrl",['$scope', function ($scope) {
+            $scope.abc="白痴";
+        }]);
+
+        myApp.directive('litx',function () {
+            return {
+                restrict: "E",
+                scope:{
+                    name:"="
+                },
+                template: "<div><span>i am pig   {{name}}</span></div>",
+                replace: false,
+                link: function (scope,elem) {
+                }
+            }
+        });
+
+    </script>
+</html>

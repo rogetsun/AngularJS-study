@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<my-direc ng-model="user" ng-change="change()"></my-direc>
+<button ng-click="change()">sss</button>
+</body>
+
+<script src="../assets/angular/angular.js"></script>
+<script>
+    /**
+     * 自定义指令想要使用ng-model绑定数据，可以直接使用。
+     * 但是想要在绑定ng-change，在ng-model改变时出发两种方式：
+     * 1、如果是简单的字符串，在指令内部数据发生改变时，调用ctrl.$setViewValue(scope.user);
+     * 2、一劳永逸的简单方法：直接ctrl.$$writeModelToScope();这个方法会把所有绑定检查ngmodel数据的lisenter执行一遍。
+     *      当然要在ngmodel绑定的数据发生改变时。
+     *
+     *      注意：如果ngmodel是简单的字符串的话值传递不会给到外层的scope上。
+     *      所以要搭配ctrl.$modelValue = scope.user;使用.
+     *
+     *
+     */
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                $scope.user ='name';
+                $scope.change = function () {
+                    console.log($scope.user);
+                }
+            })
+            .directive('myDirec', function () {
+                return {
+                    restrict: 'AE',
+                    replace: true,
+                    transclude: true,
+                    scope: {
+                        ngModel: '='
+                    },
+                    template: '<div>{{title}}<input type="text" ng-model="user" ng-click="change();"></div>',
+                    require: "^?ngModel",
+                    link: function (scope, elem, attrs, ctrl) {
+                        scope.user = scope.ngModel;
+                        scope.change = function () {
+//                            ctrl.$setViewValue(scope.user);
+                            ctrl.$modelValue = scope.user;
+                            ctrl.$$writeModelToScope();
+                        };
+                    }
+                }
+            })
+</script>
+</html>

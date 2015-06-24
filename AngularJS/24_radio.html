@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+    <script src="../assets/jquery/jquery-1.11.2.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.js"></script>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<div class="btn-group" data-toggle="buttons">
+    <label class="btn btn-primary" ng-repeat="a in arr">
+        <input type="radio" name="options" id="option{{$index}}" ng-model="radio.v" ng-value="a.id">{{a.name}}
+    </label>
+
+    <label class="btn btn-primary" ng-repeat="a in array">
+        <input type="radio" name="options" id="option1{{$index}}" ng-model="radio.v" ng-value="a">{{a}}
+    </label>
+</div>
+<hr/>
+<div class="btn-group">
+
+<label ng-repeat="name in names" for="{{name}}" class="btn btn-primary">
+    {{name}}
+    <input type="radio"
+           ng-model="my.favorite"
+           ng-value="name"
+           id="{{name}}"
+           name="favorite">
+</label>
+</div>
+</body>
+<script src="../assets/angular/angular.js"></script>
+
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                $scope.radio = {v: 1};
+                $scope.arr = [{id: 1, name: 'name1'}, {id: 2, name: 'name2'}, {id: 3, name: 'name3'}];
+                $scope.array = ['a', 'b', 'c'];
+                $scope.$watch('radio.v', function (o) {
+                    console.log(o)
+                }, true);
+
+
+                $scope.names = ['pizza', 'unicorns', 'robots'];
+                $scope.my = {favorite: 'unicorns'};
+                $scope.$watch('my', function (o) {
+                    console.log(o);
+                },true);
+
+            });
+
+
+</script>
+</html>

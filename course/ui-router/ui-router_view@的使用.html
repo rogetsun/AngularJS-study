@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app">
+<div ui-view="">
+
+</div>
+<div ui-view="tips" style="position: absolute;bottom: 20px;">
+    tips
+</div>
+</body>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-ui-router.js"></script>
+<script>
+    angular.module('app', ['ui.router'])
+            .config(function ($stateProvider, $urlRouterProvider) {
+                $urlRouterProvider.otherwise('/main/sub');
+                $stateProvider
+                        .state('main', {
+                            url: '/main',
+                            template: '<div>main:<div ui-view=""></div>' +
+                            '<div ui-view="main.tips"></div></div>'
+                        })
+                        .state('main.sub', {
+                            url: '/sub',
+                            views: {
+                                '': {
+                                    template: '<div>sub:i am sub</div>'
+                                },
+                                'tips@': {
+                                    template: "<div>sub:i am sub tips in root</div>"
+                                },
+                                'main.tips@main': {
+                                    template: '<div>sub:i am sub tips in main</div>'
+                                }
+                            }
+                        })
+            })
+</script>
+</html>

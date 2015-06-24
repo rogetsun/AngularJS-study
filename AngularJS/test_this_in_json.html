@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<input type="text" ng-model="provinceCode" ng-change="change(0);provinceUrl=urlCfg.getProvinceUrl()" class="col-md-2">
+<input type="text" ng-model="provinceUrl" class="col-md-10"/>
+<hr/>
+<input type="text" ng-model="cityCode" ng-change="change(1);cityUrl=urlCfg.getCityUrl(provinceCode)" class="col-md-2">
+<input type="text" ng-model="cityUrl" class="col-md-10"/>
+<hr/>
+<input type="text" ng-model="districtCode" ng-change="change(2);districtUrl=urlCfg.getDistrictUrl(provinceCode+cityCode)" class="col-md-2"/>
+<input type="text" ng-model="districtUrl" class="col-md-10"/>
+
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', ['$scope', function ($scope) {
+                var cfg = {
+                    url: '/address',
+                    provinceUrl: '/province',
+                    cityUrl: '/city',
+                    districtUrl: '/district',
+                    getProvinceUrl: function () {
+                        return this.url + this.provinceUrl + '/list';
+                    },
+                    getCityUrl: function (provinceCode) {
+                        console.log('provinceCode:'+provinceCode)
+                        return this.url + this.provinceUrl + '/' + provinceCode + this.cityUrl + '/list';
+                    },
+                    getDistrictUrl: function (provinceCityCode) {
+                        console.log('provinceCityCode:'+provinceCityCode);
+                        return this.url + this.provinceUrl + '/' + provinceCityCode.substr(0, 2) + this.cityUrl + '/' + provinceCityCode.substr(2) + this.districtUrl + '/list';
+                    }
+                };
+                $scope.urlCfg = cfg;
+                console.log($scope.urlCfg);
+
+                $scope.change = function (idx) {
+                    switch (idx) {
+                        case 0:
+                            console.log(0);
+                            break;
+                        case 1:
+                            console.log(1);
+                            break;
+                        case 2:
+                            console.log(2);
+                            break;
+                        default:
+                            console.log(idx);
+                    }
+                }
+            }
+
+            ]);
+</script>
+</html>
