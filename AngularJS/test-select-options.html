@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+<select ng-model="user" ng-options="u as u.name for u in users track by u.id" ng-change="log()"></select>
+
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope, $http) {
+
+                $http.get('../assets/data.json').then(function (data) {
+                    console.log(data.data);
+                    $scope.users = data.data;
+//                    var i = parseInt(Math.random() * $scope.users.length);
+//                    console.log(i);
+//                    $scope.user = $scope.users[i];
+//                    $scope.user.nickname = 'fdsafdsafs';
+                });
+
+                $scope.log = function () {
+                    console.log($scope.user);
+                }
+
+            })
+</script>
+</html>
