@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+
+    <div class="panel panel-danger">
+        <div class="panel-heading" ng-include="html">
+        </div>
+        <div class="panel-body">
+
+            fdsafdsafd
+            fdsa
+            fd
+            saf
+            dsa
+            f
+
+        </div>
+    </div>
+</body>
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope, $templateCache) {
+                var html = '<div ng-bind="title.name"></div>';
+                $templateCache.put('inner.html', html);
+                $scope.html = 'inner.html';
+                $scope.title = {name:'litx'};
+            })
+            .filter('safeHtml', function ($sce) {
+                return function (txt) {
+                    return $sce.trustAsHtml(txt);
+                }
+            })
+</script>
+</html>
