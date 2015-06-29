@@ -26,10 +26,11 @@
 <script>
     angular.module('app', [])
             .controller('ctrl', function ($scope, $templateCache) {
-                var html = '<div ng-bind="title.name"></div>';
+                var html = '<div ng-bind="title.name"></div><div>{{content}}</div>';
                 $templateCache.put('inner.html', html);
                 $scope.html = 'inner.html';
                 $scope.title = {name:'litx'};
+                $scope.content = '123456789k0';
             })
             .filter('safeHtml', function ($sce) {
                 return function (txt) {
