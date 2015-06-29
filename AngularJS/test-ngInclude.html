@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../assets/angular/angular.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+<div id="ww">
+    <div ng-include="demo" class="well"></div>
+
+</div>
+<div>
+    <button ng-click="change()">change</button>
+</div>
+<script>
+    angular.module('myApp', [])
+            .controller('myCtrl', ['$scope', '$templateCache', '$q', function ($scope, $templateCache, $q) {
+                $scope.name = 'wanw';
+                var tmp = '<h4>DEMO</h4>'
+                        + '<p>测试$templateCache显示,下面是$scope信息</p><br>'
+                        + '名字:{{name}}';
+//                $templateCache.put('demo.html',tmp);
+                //promise模式
+                function greet(name) {
+                    var deferred = $q.defer();
+                    setTimeout(function () {
+                        $scope.$apply(function () {
+                            deferred.notify('即将问候 ' + name + '.');
+                            if (name == 'ww'|| true) {
+                                deferred.resolve('你好, ' + name + '!');
+                            } else {
+                                deferred.reject('拒绝问候 ' + name + ' .');
+                            }
+                        });
+                    }, 1000);
+                    return deferred.promise;
+                }
+
+                var promise = greet('ww');
+                promise.then(function (data) {
+                    console.log('成功: ' + data);
+                    //    $templateCache.put('demo.html',tmp);
+                    $scope.name = data;
+                    $templateCache.put('demo.html', tmp);
+                    console.log($templateCache.get('demo.html'));
+                    $scope.demo = 'demo.html';
+                });
+                var c = 1;
+                $scope.change = function () {
+                    console.log('change');
+                    tmp = '<h4>DEMO</h4>'
+                    + '<p>测试$templateCache显示,下面是$scope信息:' + (++c) + '</p><br>'
+                    + '名字:{{name}}';
+                    console.log(tmp);
+                    greet('ww' + c).then(function (data) {
+                        $scope.name = data;
+                        console.log(c);
+                        $templateCache.remove('demo'+(c-1)+'.html');
+                        console.log('***********');
+                        console.log($templateCache.get('demo'+(c-1)+'.html'));
+                        console.log('***********');
+                        $templateCache.put('demo' + c + '.html', tmp);
+                        $scope.demo = 'demo' + c + '.html';
+
+                        console.log($scope.demo);
+                    })
+                }
+
+            }]);
+
+
+</script>
+</body>
+</html>
