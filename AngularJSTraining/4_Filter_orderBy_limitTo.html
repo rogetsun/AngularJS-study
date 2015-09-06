@@ -77,21 +77,21 @@ search all : <input type="text" ng-model="query.$">
             $scope.modifyUser = u;
             angular.copy(u, $scope.tmpU);
             console.log('modifyUser = ' + JSON.stringify($scope.tmpU));
-        }
+        };
 
         $scope.save = function () {
             angular.copy($scope.tmpU, $scope.modifyUser);
             $scope.tmpU = {};
-        }
+        };
 
         $scope.del = function (i) {
             $scope.users.splice(i, 1);
-        }
+        };
 
         $scope.add = function () {
             $scope.users.push($scope.tmpU);
             $scope.tmpU = {};
-        }
+        };
 
     }]);
 </script>
