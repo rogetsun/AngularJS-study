@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../assets/ngDialog/css/ngDialog.css"/>
+    <link rel="stylesheet" href="../../assets/ngDialog/css/ngDialog-theme-default.css"/>
+    <link rel="stylesheet" href="../../assets/ngDialog/css/ngDialog-theme-plain.css"/>
+
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="btn btn-sm btn-info" ng-click="open1()">open then close promise</div>
+</body>
+<script src="../../assets/jquery/jquery-1.11.2.min.js"></script>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/ngDialog/js/ngDialog.js"></script>
+<script>
+    angular.module('app', ['ngDialog'])
+            .controller('ctrl', ['$scope', 'ngDialog', '$q', function ($scope, ngdialog, $q) {
+                $scope.title = 'title';
+                $scope.open1 = function () {
+                    console.log('open1');
+                    ngdialog.open({
+                        template: 'tpl1',
+                        resolve:{
+                            title: function () {
+                                var d = $q.defer();
+                                d.resolve('titleeeeee');
+                                return d.promise;
+                            }
+                        }
+                        ,controller: function ($scope, title) {
+                            $scope.title = title;
+                            $scope.close = function () {
+                                console.log($scope.txt);
+                                $scope.closeThisDialog($scope.txt);
+                            }
+                        },
+                        closeByEscape: true
+                    }).closePromise.then(function (d) {
+                        console.log('then');
+                        console.log(d.value);
+                    });
+                }
+            }])
+</script>
+<script type="text/ng-template" id="tpl1">
+    <div class="panel panel-success" style="margin:-15px;width: 800px;">
+        <div class="panel-heading">{{title}}</div>
+        <div class="panel-body">
+            <input ng-model="txt">
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-sm btn-primary" ng-click="close()">OK</button>
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="tpl2">
+    <h1>{{title}}</h1>
+    <div>fdsafdsafdsafds</div>
+</script>
+</html>

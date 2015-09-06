@@ -70,7 +70,7 @@
 
 .ngdialog-overlay {
   position: fixed;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.6);
   top: 0;
   right: 0;
   bottom: 0;
@@ -92,6 +92,15 @@
   -webkit-backface-visibility: hidden;
   -webkit-animation: ngdialog-fadein 0.5s;
   animation: ngdialog-fadein 0.5s;
+
+  -webkit-box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+
 }
 
 .ngdialog.ngdialog-closing .ngdialog-content {
