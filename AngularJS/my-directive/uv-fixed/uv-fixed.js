@@ -8,6 +8,9 @@
 
 angular.module('uv.fixed', [])
 /**
+ * 需要滚动粘帖顶部的元素添加uv-sticky
+ * 需要指定粘帖时距离顶部距离的给uv-sticky赋值，默认10个像素。注意赋值时不带单位px
+ *
  * 实现逻辑：
  *      1、将需要滚动时，粘帖顶部的元素前面插入一个占位元素，并设置样式。
  *      2、将粘帖元素加在body上，并设置为绝对定位
@@ -21,9 +24,7 @@ angular.module('uv.fixed', [])
             replace: true,
             transclude: true,
             template: "<div ng-transclude></div>",
-            scope: {
-                uvStickyMinTop: '@'
-            },
+            scope: {},
             link: function (scope, elem, attr) {
                 /***
                  * document.onready时，获取元素offset定位时，网页css渲染未必完成，所以获取的offset可能是错误的。
@@ -43,7 +44,7 @@ angular.module('uv.fixed', [])
                         .insertBefore(elem);
 
                     /** 粘帖顶部后，距离顶部高度位置 */
-                    scope.uvStickyTop = parseInt(scope.uvStickyMinTop || 10);
+                    scope.uvStickyTop = parseInt(attr.uvSticky || 10);
                     //粘帖元素本身初始状态应该的高度，和替换它的占位元素一致。
                     var initTop = tElem.offset().top,
                     //左边距离
