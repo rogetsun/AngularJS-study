@@ -38,13 +38,13 @@ angular.module('uv.fixed', [])
                     /** 临时占位元素 */
                     var tElem = angular.element("<div></div>")
                         .attr('style', elem.attr('style'))
-                        //.attr('class', elem.attr('class'))
+                        .attr('class', elem.attr('class'))
                         .css('width', elem.css('width'))
 //                                    .css('height', elem.css('auto'))
                         .css('display', elem.css('display') || 'block')
                         .css('position', elem.css('position'))
                         .insertBefore(elem);
-
+                    var background = elem.css('background');
                     /** 粘帖顶部后，距离顶部高度位置 */
                     scope.uvStickyTop = parseInt(attr.uvSticky || 10);
                     //粘帖元素本身初始状态应该的高度，和替换它的占位元素一致。
@@ -59,10 +59,15 @@ angular.module('uv.fixed', [])
                         .css('overflow', 'auto')
                         .css('max-height', angular.element(window).height() - initTop)
                         .css('width', tElem.css('width'))
+                        .attr('class', tElem.attr('class'))
+                        .css('background', tElem.css('background'))
+                        .css('border', tElem.css('border'))
                         .appendTo('body')
                         .offset(tElem.offset());
 
-                    tElem.css('height', elem.css('height'));
+                    tElem.css('height', elem.css('height'))
+                        .css('border', 'none')
+                        .css('background', 'rgba(0,0,0,0)');
 
                     $document.scroll(function () {
                         /***
