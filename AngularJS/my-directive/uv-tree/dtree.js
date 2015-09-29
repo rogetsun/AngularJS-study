@@ -81,7 +81,7 @@ function dTree(objName, iconPrefix) {
         closeSameLevel: false,
         inOrder: false,
         multiSelect: false,
-        check: false    // 检查是否有复选框
+        checkbox: false    // 检查是否有复选框
     };
     this.icon = {
         root: iconPrefix + '/folderopen.gif',
@@ -193,7 +193,7 @@ dTree.prototype.node = function (node, nodeId) {
 
     }
     //添加上复选框
-    if (this.config.check == true) {
+    if (this.config.checkbox == true) {
         //	alert(nodeId+","+json2string(node._p));
         //	alert(node._p._ai);
         str += '<input type="checkbox" name="checkboxValues"  style="cursor:pointer;" value="' + node.id + '" id="c' + this.obj + node.id
