@@ -66,7 +66,7 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open, isSelecte
     this._hc = false;				//is or not father node
     this._ai = 0;					//节点顺序，在aNodes[]数组中的位置
     this._p;						//父节点node对象
-    this.userData = (!tmpData ? '' : tmpData);		//用户树节点的复杂数据信息
+    this.userData = tmpData || null;//用户树节点的复杂数据信息
 }
 
 // Tree object, songyw add multiSelect flag 2013/3/12 11:15:56
@@ -189,16 +189,14 @@ dTree.prototype.node = function (node, nodeId) {
             node.iconOpen = this.icon.root;
         }
         str += '<img id="i' + this.obj + nodeId + '" src="' + ((node._io) ? node.iconOpen : node.icon) + '" alt="" />';
-
-
     }
     //添加上复选框
     if (this.config.checkbox == true) {
         //	alert(nodeId+","+json2string(node._p));
         //	alert(node._p._ai);
         str += '<input type="checkbox" name="checkboxValues"  style="cursor:pointer;" value="' + node.id + '" id="c' + this.obj + node.id
-            + '" onClick="javascript:' + this.obj + '.cc(&quot;' + node.id
-            + '&quot;,&quot;' + node.pid + '&quot;);"/>';
+            + '" onClick="javascript:' + this.obj + '.cc(&quot;' + node._ai
+            + '&quot;,&quot;' + node._p._ai + '&quot;);"/>';
     }
     if (node.url) {
         str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + node.url + '"';
@@ -259,12 +257,20 @@ dTree.prototype.getSelected = function () {
         var retJson = [];
         for (var i = 0; i < this.selectedNode.length; i++) {
             var tmpNode = this.aNodes[this.selectedNode[i]];
-            retJson[i] = {'id': tmpNode.id, 'name': tmpNode.name, 'userData': tmpNode.userData};
+            if (tmpNode.userData) {
+                retJson[i] = tmpNode.userData;
+            } else {
+                retJson[i] = {'id': tmpNode.id, 'name': tmpNode.name, 'userData': tmpNode.userData};
+            }
         }
         return retJson;
     } else {
         var tmpNode = this.aNodes[this.selectedNode[0]];
-        return {'id': tmpNode.id, "name": tmpNode.name, 'userData': tmpNode.userData};
+        if (tmpNode.userData) {
+            return tmpNode.userData;
+        } else {
+            return {'id': tmpNode.id, 'name': tmpNode.name};
+        }
     }
 
 };
@@ -290,6 +296,7 @@ dTree.prototype.getSelectedNodePath = function () {
 
 //songyw add for 从dTree的中间存储空间删除指定选中的node节点对应于aNodes[]的下标，并返回修改后的数组长度 2013/3/12 11:53:09,
 dTree.prototype.removeSeletedNode = function (value) {
+    this.aNodes[value]._is = false;
     for (var i = 0; i < this.selectedNode.length; i++) {
         if (this.selectedNode[i] == value) {
             this.selectedNode.splice(i, 1);
@@ -306,6 +313,7 @@ dTree.prototype.addSelectedNode = function (value) {
     for (var i = 0; i < this.selectedNode.length; i++) {
         if (this.selectedNode[i] == value) return this.selectedNode.length;
     }
+    this.aNodes[value]._is = true;
     this.selectedNode[this.selectedNode.length] = value;
     this.selectedFound = true;
     return this.selectedNode.length;
@@ -325,18 +333,16 @@ dTree.prototype.s = function (id) {
     if (cn._hc && !this.config.folderLinks) return;
 
     //songyw modify to support multi select 2013/3/12 11:48:47
-    /**
-     if (this.selectedNode != id) {
-		if (this.selectedNode || this.selectedNode==0) {
-			var eOld = document.getElementById("s" + this.obj + this.selectedNode);
-			eOld.className = "node";
-		}
-		var eNew = document.getElementById("s" + this.obj + id);
-		eNew.className = "nodeSel";
-		this.selectedNode = id;
-
-	}
-     */
+    //if (this.selectedNode != id) {
+    //    if (this.selectedNode || this.selectedNode == 0) {
+    //        var eOld = document.getElementById("s" + this.obj + this.selectedNode);
+    //        eOld.className = "node";
+    //    }
+    //    var eNew = document.getElementById("s" + this.obj + id);
+    //    eNew.className = "nodeSel";
+    //    this.selectedNode = id;
+    //
+    //}
     if (cn._is) {
 
         var eOld = document.getElementById("s" + this.obj + id);
@@ -456,66 +462,110 @@ dTree.prototype.nodeStatus = function (status, id, bottom) {
     eDiv.style.display = (status) ? 'block' : 'none';
 };
 //checkbox 多选   modify 5.14 wangwei
-dTree.prototype.cc = function (nodeId, nodePid) {
-    //首先获取这个多选框的id
-    var cs = document.getElementById("c" + this.obj + nodeId).checked;
+dTree.prototype.cc_parent = function (parent_node_ai, select_flag) {
+    var node = this.aNodes[parent_node_ai];
+    if (!select_flag) {
+        var hasOtherChildrenSelected = false;
+        for (var i = 0; i < this.selectedNode.length; i++) {
+            if (this.aNodes[this.selectedNode[i]].pid == node.id) {
+                hasOtherChildrenSelected = true;
+                break;
+            }
+        }
+        if (!hasOtherChildrenSelected) {
+            this.removeSeletedNode(parent_node_ai);
+            document.getElementById("c" + this.obj + node.id).checked = select_flag;
+            if (node.pid != -1) this.cc_parent(node._p._ai, select_flag);
+        }
+    } else {
+        this.addSelectedNode(parent_node_ai);
+        document.getElementById("c" + this.obj + node.id).checked = select_flag;
+        if (node.pid != -1) this.cc_parent(node._p._ai, select_flag);
+    }
+};
 
-    var n, node = this.aNodes[nodeId];
-
-    var len = this.aNodes.length;
-
-    for (n = 0; n < len; n++) { //如果循环每一个节点
-        if (this.aNodes[n].pid == nodeId) { //如果选中的是非叶子节点,则要将所有的子节点选择和父节点一样
-            document.getElementById("c" + this.obj + this.aNodes[n].id).checked = cs;
-            this.cc(this.aNodes[n].id, nodeId);
+dTree.prototype.cc_children = function (node_ai, select_flag) {
+    var node = this.aNodes[node_ai];
+    console.log(node);
+    document.getElementById("c" + this.obj + node.id).checked = select_flag;
+    if (!select_flag) {
+        this.removeSeletedNode(node_ai);
+    } else {
+        this.addSelectedNode(node_ai);
+    }
+    if (node._hc) {
+        for (var i = parseInt(node_ai) + 1; i < this.aNodes.length; i++) {
+            if (this.aNodes[i].pid == node.id) {
+                this.cc_children(i, select_flag);
+            }
         }
     }
 
-    if (cs == true) {  //当前是选中状态
-        var pid = nodePid;
-        var bSearch;
-//        node._is=true;//设置选中
-        //    this.addSelectedNode(node._ai);
-        //    alert("!!!!!!!!!!!"+this.aNodes[nodeId]);
+};
 
-        //   this.addSelectedNode(id);
-        do {
-            bSearch = false;
-            for (n = 0; n < len; n++) {  //循环每一个节点
-                if (this.aNodes[n].id == pid) {  //如果循环的节点的id等于PID
-                    document.getElementById("c" + this.obj + pid).checked = true; //那么这个循环的节点应该被选中
-                    pid = this.aNodes[n].pid;
-//                    this.aNodes[pid]._is=true;//设置父节点选中
-                    //           this.aNodes[this.aNodes[n]._p._ai]._is=true;
-                    //       alert("@@@@@@@@@@@"+this.aNodes[n]._p._ai)
-                    this.addSelectedNode(this.aNodes[n]._p._ai);
-                    bSearch = true;
-                    break;
-                }
-            }
-        } while (bSearch == true);
-    }
-
-    if (cs == false) {      //如果被取消选择
-        var pid = nodePid;
-//        node._is=false;
-        do {
-            for (j = 0; j < len; j++) {         //循环每一个多选框  如果这个节点的子节点有其他是选中的,则不取消
-                if (this.aNodes[j].pid == pid && document.getElementById("c" + this.obj + this.aNodes[j].id).checked == true) {
-                    return;
-                }
-            }
-            if (j == len) {   //循环结束
-                for (k = 0; k < len; k++) {
-                    if (this.aNodes[k].id == pid) {   //如果找到父节点
-                        document.getElementById("c" + this.obj + this.aNodes[k].id).checked = false;
-                        pid = this.aNodes[k].pid;
-                        break;
-                    }
-                }
-            }
-        } while (pid != -1);
-    }
+dTree.prototype.cc = function (node_ai, parent_node_ai) {
+    //首先获取这个多选框的id
+    var node = this.aNodes[node_ai];
+    var cs = document.getElementById("c" + this.obj + node.id).checked;
+    console.log('children');
+    this.cc_children(node_ai, cs);
+    console.log('parent');
+    this.cc_parent(parent_node_ai, cs);
+//    var n;
+//    var len = this.aNodes.length;
+//
+//    for (n = 0; n < len; n++) { //如果循环每一个节点
+//        if (this.aNodes[n].pid == nodeId) { //如果选中的是非叶子节点,则要将所有的子节点选择和父节点一样
+//            document.getElementById("c" + this.obj + this.aNodes[n].id).checked = cs;
+//            this.cc(this.aNodes[n].id, nodeId);
+//        }
+//    }
+//
+//    if (cs == true) {  //当前是选中状态
+//        var pid = nodePid;
+//        var bSearch;
+////        node._is=true;//设置选中
+//        //    this.addSelectedNode(node._ai);
+//        //    alert("!!!!!!!!!!!"+this.aNodes[nodeId]);
+//
+//        //   this.addSelectedNode(id);
+//        do {
+//            bSearch = false;
+//            for (n = 0; n < len; n++) {  //循环每一个节点
+//                if (this.aNodes[n].id == pid) {  //如果循环的节点的id等于PID
+//                    document.getElementById("c" + this.obj + pid).checked = true; //那么这个循环的节点应该被选中
+//                    pid = this.aNodes[n].pid;
+////                    this.aNodes[pid]._is=true;//设置父节点选中
+//                    //           this.aNodes[this.aNodes[n]._p._ai]._is=true;
+//                    //       alert("@@@@@@@@@@@"+this.aNodes[n]._p._ai)
+//                    this.addSelectedNode(this.aNodes[n]._p._ai);
+//                    bSearch = true;
+//                    break;
+//                }
+//            }
+//        } while (bSearch == true);
+//    }
+//
+//    if (cs == false) {      //如果被取消选择
+//        var pid = nodePid;
+////        node._is=false;
+//        do {
+//            for (j = 0; j < len; j++) {         //循环每一个多选框  如果这个节点的子节点有其他是选中的,则不取消
+//                if (this.aNodes[j].pid == pid && document.getElementById("c" + this.obj + this.aNodes[j].id).checked == true) {
+//                    return;
+//                }
+//            }
+//            if (j == len) {   //循环结束
+//                for (k = 0; k < len; k++) {
+//                    if (this.aNodes[k].id == pid) {   //如果找到父节点
+//                        document.getElementById("c" + this.obj + this.aNodes[k].id).checked = false;
+//                        pid = this.aNodes[k].pid;
+//                        break;
+//                    }
+//                }
+//            }
+//        } while (pid != -1);
+//    }
 };
 // If Push and pop is not implemented by the browser
 if (!Array.prototype.push) {
