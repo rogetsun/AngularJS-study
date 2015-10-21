@@ -74,11 +74,13 @@ angular.module('uv.fixed', [])
                          * 如果滚动高度大于可滚动高度，做fixed定位；否则按占位元素的offset绝对定位到body
                          */
                         if ($document.scrollTop() > canScrollTop) {
-                            elem.css('position') != 'fixed' && elem.css('position', 'fixed')
-                                .css({top: scope.uvStickyTop, left: initLeft});
+                            elem.css('position') != 'fixed' &&
+                            elem.css('position', 'fixed')
+                                .css({top: scope.uvStickyTop, left: initLeft})
+                                .css('z-index', '9999');
                         } else {
                             elem.css('position') == 'fixed' && elem.css('position', 'absolute');
-                            elem.offset().top != initTop && elem.offset(tElem.offset());
+                            elem.offset().top != initTop && elem.offset(tElem.offset()).css('z-index', 1);
                         }
                     });
 
