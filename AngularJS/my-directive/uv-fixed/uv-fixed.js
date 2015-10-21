@@ -62,7 +62,7 @@ angular.module('uv.fixed', [])
                         .attr('class', tElem.attr('class'))
                         .css('background', tElem.css('background'))
                         .css('border', tElem.css('border'))
-                        .appendTo('body')
+                        //.appendTo('body')
                         .offset(tElem.offset());
 
                     tElem.css('height', elem.css('height'))
