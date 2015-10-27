@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css"/>
+
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<button ng-click="add()">add</button>
+<div ng-repeat="i in arr2">
+    <select ng-model="i.id">
+        <option ng-repeat="a in i.arr" value="{{a.id}}">{{a.id}}-{{a.name}}</option>
+    </select>
+</div>
+<div>
+    {{arr2|json}}
+</div>
+</body>
+<script src="../assets/angular/angular.js"></script>
+
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                var tmpArr = [
+                    {id: 1, name: 'n1'},
+                    {id: 2, name: 'n2'},
+                    {id: 3, name: 'n3'},
+                    {id: 4, name: 'n4'}
+                ];
+
+                $scope.arr2 = [];
+                $scope.add = function () {
+                    $scope.arr2.push({id: ($scope.arr2.length + 1) + "", arr: angular.copy(tmpArr)});
+                }
+            })
+</script>
+</html>
