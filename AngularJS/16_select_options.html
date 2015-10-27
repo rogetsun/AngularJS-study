@@ -4,31 +4,38 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
-<body ng-app="app" ng-controller="ctrl" >
-    <select ng-model="u" ng-options="a.id as a.id +'--'+ a.name group by '性别:'+(a.gender==0?'女':'男') for a in users " ></select>
-    <select ng-model="v" ng-options="a for a in arr " ng-change="show()"></select>
+<body ng-app="app" ng-controller="ctrl">
+<select ng-model="u"
+        ng-options="a.id as a.id +'--'+ a.name group by '性别:'+(a.gender==0?'女':'男') for a in users "></select>
+<select ng-model="v" ng-options="a for a in arr " ng-change="show()"></select>
+<br/>
+<select name="" id="" ng-model="u_id">
+    <option value="">选择</option>
+    <option ng-repeat="u in users" ng-value="u.id" ng-selected="u_id==u.id">{{u.id}}-{{u.name}}</option>
+</select>
 </body>
 <script src="assets/angular/angular.min.js"></script>
 <script>
-    var app = angular.module('app',[]);
+    var app = angular.module('app', []);
 
-    app.controller('ctrl', function ($scope, $http){
+    app.controller('ctrl', function ($scope, $http) {
 
 
-        $http({url:"10_data.json"}).success(function (data) {
+        $http({url: "10_data.json"}).success(function (data) {
             $scope.users = data;
             console.log($scope.users);
         });
 
         $scope.$watch('u', function (nv, ov, scope) {
-            console.log(angular.toJson(ov)+"--->"+angular.toJson(nv));
+            console.log(angular.toJson(ov) + "--->" + angular.toJson(nv));
         });
 
         $scope.show = function ($event) {
             console.log($scope.v);
         };
 
-        $scope.arr = ['a','b','c'];
+        $scope.arr = ['a', 'b', 'c'];
+        $scope.u_id = 2;
 
     });
 </script>
