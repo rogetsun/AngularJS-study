@@ -35,35 +35,56 @@ angular.module('uv.service.loading', [])
             '       border-radius:6px;' +
             '       padding: 5px;' +
             '   ">' +
-            '<img src="loading.gif">' +
+            '<img src="' + uvLoading._gif_path + '">' +
             '</div>' +
-            '<div style="position: fixed;top:0;left:0;width:100%;height:100%;background-color: transparent;"></div>' +
+            '<div style="position: fixed;top:0;left:0;width: 100%;height:100%;background-color: rgba(0,0,0,0.3);z-index: 99999;"></div>' +
             '</div>'
         );
         angular.element($templateCache.get('uv-loading.html')).appendTo(angular.element('body'));
-        $rootScope.$on('$stateChangeStart',
-            function (event, toState, toParams, fromState, fromParams) {
-                uvLoading.loading();
-            });
-        $rootScope.$on('$stateChangeSuccess',
-            function (event, toState, toParams, fromState, fromParams) {
-                uvLoading.unloading();
-            });
+
     }])
-    .service('uvLoading', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
+    .provider('uvLoading', [function () {
+        var loading_icon = "";
+        this.setLoadingGif = function (path) {
+            loading_icon = path || "loading.gif";
+        };
         var timer;
-        return {
-            loading: function (minisecond) {
-                $rootScope._uv_loading.show = true;
-                if (minisecond) {
-                    var _this = this;
-                    timer = $timeout(function () {
-                        _this.unloading();
-                    }, minisecond);
-                }
-            },
-            unloading: function () {
-                $rootScope._uv_loading.show = false;
-            }
-        }
-    }]);
+        this.$get = function ($rootScope) {
+            return {
+                loading: function (minisecond) {
+                    this._loadCount++;
+                    $rootScope._uv_loading.show = true;
+                    if (minisecond) {
+                        var _this = this;
+                        timer = $timeout(function () {
+                            _this.unloading();
+                        }, minisecond);
+                    }
+                },
+                unloading: function () {
+                    if (--this._loadCount <= 0)
+                        $rootScope._uv_loading.show = false;
+                },
+                _gif_path: loading_icon,
+                _loadCount: 0
+            };
+        };
+    }])
+    //.service('uvLoading', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
+    //    var timer;
+    //    return {
+    //        loading: function (minisecond) {
+    //            $rootScope._uv_loading.show = true;
+    //            if (minisecond) {
+    //                var _this = this;
+    //                timer = $timeout(function () {
+    //                    _this.unloading();
+    //                }, minisecond);
+    //            }
+    //        },
+    //        unloading: function () {
+    //            $rootScope._uv_loading.show = false;
+    //        }
+    //    }
+    //}])
+;
