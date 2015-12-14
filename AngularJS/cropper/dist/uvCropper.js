@@ -1,6 +1,7 @@
 /**
  * Created by uv2sun on 15/4/10.
  * 将tpls/modal-cropper.html合并进来的uvCropper.js版本
+ * 本指令基于ngCropper修改
  * 依赖jQuery，cropper.js，cropper.css, angular.js, bootstrap.css
  *
  * 直接使用指令uvCropperImg
