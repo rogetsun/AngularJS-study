@@ -1,12 +1,12 @@
 /**
  * Created by uv2sun on 15/4/10.
- * 将tpls/modal-cropper.html合并进来的uvCropper.js版本
+ * 未将tpls/modal-cropper.html合并进来的uvCropper.js版本
  * 依赖jQuery，cropper.js，cropper.css, angular.js, bootstrap.css
  *
  * 直接使用指令uvCropperImg
  * 4个属性：
  *  imgUrl：最后生成的图片base64码
- *  imgRatio：图片横纵比
+ *  imgRatio：图片横纵比, 不给则不限制横纵比
  *  imgMaxWidth：最后生成图片最大宽度
  *  imgCropper：最后生成截选图片后，调用的方法。
  *  initImgMaxWidth: 获取到图片后，直接缩放成这个宽度。
@@ -30,10 +30,10 @@ angular.module('uvCropper', [])
                 scope.cropperShow = false;
                 var cropperImg = element.find('#_uv_cropper_img');
                 scope.options = {
-                    aspectRatio: 1,
+                    aspectRatio: scope.imgRatio,
                     preview: ".cropper-preview"
                 };
-                if (scope.imgRatio) scope.options.aspectRatio = scope.imgRatio;
+                //if (scope.imgRatio) scope.options.aspectRatio = scope.imgRatio;
 
                 scope.selectFile = function (inputFileElement) {
                     scope.inputFileElement = inputFileElement;

@@ -6,7 +6,7 @@
  * 直接使用指令uvCropperImg
  * 4个属性：
  *  imgUrl：最后生成的图片base64码
- *  imgRatio：图片横纵比
+ *  imgRatio：图片横纵比, 不给则不限制横纵比
  *  imgMaxWidth：最后生成图片最大宽度
  *  imgCropper：最后生成截选图片后，调用的方法。
  *  initImgMaxWidth: 获取到图片后，直接缩放成这个宽度。
