@@ -19,7 +19,7 @@ angular.module('uv.service.dialog', ['ngDialog'])
         function showDialog(msg) {
             return ngDialog.open({
                 template: '<div class="panel panel-primary" style="border:none;margin:-20px;">' +
-                '<div class="panel-body">' + msg + '</div>' +
+                '<div class="panel-body" style="font-size: 13px;">' + msg + '</div>' +
                 '<div class="panel-footer" style="overflow: auto;">' +
                 '   <button class="btn btn-sm btn-primary pull-right" ng-click="closeThisDialog(1)">确定</button>' +
                 '</div>' +
@@ -37,7 +37,7 @@ angular.module('uv.service.dialog', ['ngDialog'])
         function confirm(msg) {
             return ngDialog.open({
                 template: '<div class="panel panel-primary" style="border:none;margin:-20px;">' +
-                '<div class="panel-body">' + msg + '</div>' +
+                '<div class="panel-body" style="font-size: 13px;">' + msg + '</div>' +
                 '<div class="panel-footer" style="overflow: auto;">' +
                 '   <button class="btn btn-sm btn-default pull-right" style="margin-left: 10px;" ng-click="closeThisDialog()">取消</button>' +
                 '   <button class="btn btn-sm btn-primary pull-right" ng-click="closeThisDialog(1)">确定</button>' +
