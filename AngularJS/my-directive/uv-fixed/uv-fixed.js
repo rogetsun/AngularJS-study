@@ -1,25 +1,21 @@
 /**
- * Created by uv2sun on 15/9/6.
- */
-
-/**
  * Created by uv2sun on 15/7/13.
  */
 
 angular.module('uv.fixed', [])
-/**
- * 需要滚动粘帖顶部的元素添加uv-sticky
- * 需要指定粘帖时距离顶部距离的给uv-sticky赋值，默认10个像素。注意赋值时不带单位px
- *
- * 注意：依赖jQuery
- *
- * 实现逻辑：
- *      1、将需要滚动时，粘帖顶部的元素前面插入一个占位元素，并设置样式。
- *      2、将粘帖元素加在body上，并设置为绝对定位
- *      3、给粘帖元素按占位元素的offset设置，并设置其max-height不可超出网页可是范围。
- *      4、重新粘帖元素的高度设置占位元素的高度
- *      5、增加滚动监听，当滚动高度大于粘帖元素在非fixed时可滚动的高度，改为fixed定位；否则absolute到body
- * */
+    /**
+     * 需要滚动粘帖顶部的元素添加uv-sticky
+     * 需要指定粘帖时距离顶部距离的给uv-sticky赋值，默认10个像素。注意赋值时不带单位px
+     *
+     * 注意：依赖jQuery
+     *
+     * 实现逻辑：
+     *      1、将需要滚动时，粘帖顶部的元素前面插入一个占位元素，并设置样式。
+     *      2、将粘帖元素加在body上，并设置为绝对定位
+     *      3、给粘帖元素按占位元素的offset设置，并设置其max-height不可超出网页可是范围。
+     *      4、重新粘帖元素的高度设置占位元素的高度
+     *      5、增加滚动监听，当滚动高度大于粘帖元素在非fixed时可滚动的高度，改为fixed定位；否则absolute到body
+     * */
     .directive('uvSticky', ['$document', '$timeout', function ($document, $timeout) {
         return {
             restrict: 'EA',
@@ -40,9 +36,10 @@ angular.module('uv.fixed', [])
                         .attr('style', elem.attr('style'))
                         .attr('class', elem.attr('class'))
                         .css('width', elem.css('width'))
-//                                    .css('height', elem.css('auto'))
+                        //                                    .css('height', elem.css('auto'))
                         .css('display', elem.css('display') || 'block')
                         .css('position', elem.css('position'))
+                        .css('opacity', '0')
                         .insertBefore(elem);
                     var background = elem.css('background');
                     /** 粘帖顶部后，距离顶部高度位置 */
@@ -90,9 +87,9 @@ angular.module('uv.fixed', [])
 
         }
     }])
-/***
- * 获取各种高、度宽度
- */
+    /***
+     * 获取各种高、度宽度
+     */
     .service('WHService', ['$window', '$document', function ($window, $document) {
         function GetInfo() {
             var s = "";
