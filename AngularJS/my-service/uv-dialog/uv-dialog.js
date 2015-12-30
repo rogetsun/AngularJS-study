@@ -3,14 +3,16 @@
  * 基于ngDialog简化版本
  */
 angular.module('uv.service.dialog', ['ngDialog'])
-    .service('uvDialog', ['ngDialog', function (ngDialog) {
+    .service('uvDialog', ['$rootScope', 'ngDialog', function ($rootScope, ngDialog) {
         this.show = function (msg) {
             return showDialog(msg);
         };
         this.confirm = function (msg) {
             return confirm(msg);
         };
-
+        this.showTemplate = function (template, scope, data, controller, resolve) {
+            return openTemplateDialog(template, scope, data, controller, resolve);
+        };
         /**
          * 提示信息确认框
          * @param msg
@@ -48,4 +50,29 @@ angular.module('uv.service.dialog', ['ngDialog'])
                 return data.value;
             });
         }
+
+        /**
+         * 自定义模版dialog
+         * @param template 模版名称 <script type="text/ng-template" id="模版名称"></script>
+         * @param scope 父级scope
+         * @param data  jsonObject,key为模版scope[key]
+         * @param controller 自定义controller名称
+         * @param resolve resolve数组
+         * @returns {*}
+         */
+        var openTemplateDialog = function (template, scope, data, controller, resolve) {
+            if (!template) return;
+            angular.forEach(data, function (v, k) {
+                scope[k] = v;
+            });
+            var option = {scope: scope, closeByDocument: false, showClose: false, overlay: true, template: template};
+            if (controller)option.controller = controller;
+            if (resolve)option.resolve = resolve;
+            return ngDialog.open(option).closePromise.then(function (data) {
+                angular.forEach(data, function (v, k) {
+                    delete scope[k];
+                });
+                return data.value;
+            });
+        };
     }]);
