@@ -46,10 +46,10 @@ angular.module('uv.service.loading', [])
     .provider('uvLoading', [function () {
         var loading_icon = "";
         this.setLoadingGif = function (path) {
-            loading_icon = path || "loading.gif";
+            loading_icon = path;
         };
         var timer;
-        this.$get = function ($rootScope) {
+        this.$get = ['$rootScope', '$timeout', function ($rootScope, $timeout) {
             return {
                 loading: function (minisecond) {
                     this._loadCount++;
@@ -68,7 +68,7 @@ angular.module('uv.service.loading', [])
                 _gif_path: loading_icon,
                 _loadCount: 0
             };
-        };
+        }];
     }])
     //.service('uvLoading', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
     //    var timer;
