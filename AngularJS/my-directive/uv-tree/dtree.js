@@ -61,7 +61,7 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open, isSelecte
     this.icon = icon;				//节点关闭时的显示图片的路径
     this.iconOpen = iconOpen;		//节点打开时的显示图片的路径
     this._io = open || false; 		//是否展开标志
-    this._is = isSelected || false;	//是否选中
+    this._is = !!isSelected;	    //是否选中
     this._ls = false;				//if a node has any children and if it is the last sibling
     this._hc = false;				//is or not father node
     this._ai = 0;					//节点顺序，在aNodes[]数组中的位置
@@ -196,7 +196,7 @@ dTree.prototype.node = function (node, nodeId) {
         //	alert(node._p._ai);
         str += '<input type="checkbox" name="checkboxValues"  style="cursor:pointer;" value="' + node.id + '" id="c' + this.obj + node.id
             + '" onClick="javascript:' + this.obj + '.cc(&quot;' + node._ai
-            + '&quot;,&quot;' + node._p._ai + '&quot;);"/>';
+            + '&quot;,&quot;' + node._p._ai + '&quot;);" ' + (node._is ? "checked" : '') + '/>';
     }
     if (node.url) {
         str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + node.url + '"';

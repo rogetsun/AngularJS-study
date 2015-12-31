@@ -1,16 +1,31 @@
 /**
  * 基于dtree的angularjs版tree
  *
+ * 注意一级节点的父节点ID要为-1
+ *
  * example：
- <div class="tree" uv-tree="funcs" uv-tree-data="funcs" uv-tree-node-id-key="func_code"
- uv-tree-node-parent-id-key="par_func_code" uv-tree-node-name-key="func_name" uv-tree-node-selected-key="selected"
- uv-tree-multi-select="true">
- </div>
+ * <div class="tree" uv-tree="funcs" uv-tree-data="funcs" uv-tree-node-id-key="func_code"
+ * uv-tree-node-parent-id-key="par_func_code" uv-tree-node-name-key="func_name" uv-tree-node-selected-key="selected"
+ * uv-tree-multi-select="true">
+ * </div>
  *
  *
  */
 angular.module('uv.directive.tree', [])
-    .directive('uvTree', ['$timeout', function ($timeout) {
+    .provider('uvTreeConfig', [function () {
+        var imgFolder = "./img";
+        return {
+            setImgFolder: function (imgFolderPath) {
+                imgFolder = imgFolderPath;
+            },
+            $get: function () {
+                return {
+                    imgFolder: imgFolder
+                }
+            }
+        }
+    }])
+    .directive('uvTree', ['$timeout', 'uvTreeConfig', function ($timeout, uvTreeConfig) {
         return {
             restrict: 'EA',
             template: '<div></div>',
@@ -24,21 +39,20 @@ angular.module('uv.directive.tree', [])
                 uvTreeSelectNodeFunc: '&'   //暂时没用
             },
             link: function ($scope, elem, attr) {
-                var treeScopeName = attr.uvTree;
-                window.funcTree = new dTree('funcTree', '/static/assets/uv-tree/img');
-                $scope.$parent[treeScopeName] = window.funcTree;
-                funcTree.config.multiSelect = !!$scope.uvTreeMultiSelect;
-                funcTree.config.checkbox = !!$scope.uvTreeMultiSelect;
-                funcTree.config.useIcons = false;
+                var treeScopeName = attr.uvTree || ("_tree" + parseInt(Math.random() * 100));
+                window[treeScopeName] = new dTree(treeScopeName, uvTreeConfig.imgFolder);
+                $scope.$parent[treeScopeName] = window[treeScopeName];
+                window[treeScopeName].config.multiSelect = !!$scope.uvTreeMultiSelect;
+                window[treeScopeName].config.checkbox = !!$scope.uvTreeMultiSelect;
+                window[treeScopeName].config.useIcons = false;
                 var id = $scope.uvTreeNodeIdKey,
                     pid = $scope.uvTreeNodeParentIdKey,
                     name = $scope.uvTreeNodeNameKey,
                     selectKey = $scope.uvTreeNodeSelectedKey;
-
                 angular.forEach($scope.uvTreeData, function (v) {
-                    funcTree.add(v[id], v[pid], v[name], '', '', v[selectKey], v, true);
+                    window[treeScopeName].add(v[id], v[pid], v[name], '', '', v[selectKey], v, true);
                 });
-                var treeHtml = funcTree.toString();
+                var treeHtml = window[treeScopeName].toString();
                 elem.html(treeHtml);
 
             }
