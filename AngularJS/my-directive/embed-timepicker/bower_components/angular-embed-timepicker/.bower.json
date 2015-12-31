@@ -1,0 +1,40 @@
+{
+  "name": "angular-embed-timepicker",
+  "version": "0.0.4",
+  "dependencies": {
+    "angular": "~1.0.7"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.0.7",
+    "angular-scenario": "~1.0.7"
+  },
+  "homepage": "https://github.com/ringtail/angular-time-picker-embed",
+  "authors": [
+    "zhongwei.lzw <zhongwei.lzw@alibaba-inc.com>"
+  ],
+  "description": "embed timepicker in angularjs",
+  "main": "src/angular-embed-timepicker/angular-embed-timepicker",
+  "keywords": [
+    "angularjs",
+    "timepicker",
+    "embed"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "0.0.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.4",
+    "commit": "5ec9b9e34362195253862c36b589bb3700d0eff9"
+  },
+  "_source": "git://github.com/ringtail/angular-time-picker-embed.git",
+  "_target": "~0.0.4",
+  "_originalSource": "angular-embed-timepicker",
+  "_direct": true
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>uv-datetimepicker</title>
+    <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        uv-datetimepicker 测试
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">uv-time-picker="timestamp"</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" uv-time-picker ng-model="time1">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-3">
+                    <div class="well">{{time1}}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">uv-time-picker="date"</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" uv-time-picker="date" ng-model="time2">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-3">
+                    <div class="well">{{time2}}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">uv-date-time-picker="timestamp"</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" uv-date-time-picker ng-model="datetime1">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-3">
+                    <div class="well">{{datetime1}}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">uv-date-time-picker="date"</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" uv-date-time-picker="date" ng-model="datetime2">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-3">
+                    <div class="well">{{datetime2}}</div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+<script src="../../../assets/jquery/jquery-1.11.2.min.js"></script>
+<script src="../../../assets/angular/angular.min.js"></script>
+<script src="bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script src="bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="uv.directive.datetimepicker.js"></script>
+<script>
+    angular.module('app', ['uv.directive.datetimepicker'])
+            .controller('ctrl', function ($scope) {
+                console.log('ctrl');
+                $scope.time1 = new Date().getTime() + "";
+                $scope.datetime1 = new Date().getTime() + "";
+                console.log('ctrl');
+            })
+</script>
+
+</html>
