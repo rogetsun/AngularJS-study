@@ -24,6 +24,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * ========================================================= */
+/**
+ * songyw modify,压缩版也修改了
+ *      修复了上午0点显示12点问题,修改了2个地方如下:
+ *      690+行: txt = (i % 12 ? i % 12 : 12);-->txt = (i % 12 ? i % 12 : (i < 12 ? 0 : 12));
+ *      710+行: txt = (hours % 12 ? hours % 12 : 12);-->txt = (hours % 12 ? hours % 12 : (hours < 12 ? 0 : 12));
+ * */
 !function ($) {
 
     // Add ECMA262-5 Array methods if not supported natively (IE8)
