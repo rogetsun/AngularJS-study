@@ -100,7 +100,7 @@ angular.module('uv.directive.datetimepicker', [])
                      */
                         //$timeout(function () {
                     element.datetimepicker('update', initDate);
-                    watch();
+                    watch();//取消$watch
                     //});
                 });
 
