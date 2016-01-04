@@ -33,23 +33,22 @@ angular.module('uv.directive.datetimepicker', [])
                     scope.$apply();
                 });
                 /**
-                 * scope中ngModel绑定的数据timestamp值
+                 * scope中ngModel绑定的数据timestamp值处理成显示时间格式
                  */
-                var initTimestamp = scope[attrs.ngModel];
-                if (initTimestamp) {
+                scope.$watch(attrs.ngModel, function (nv) {
                     /**
                      * 生成ngModel绑定的值对应的Date对象
                      * @type {Date}
                      */
                     var initDate = new Date();
-                    initDate.setTime(initTimestamp);
+                    initDate.setTime(nv);
                     /**
                      * 在angular完成所有操作后,按上面datetimepicker配置的规则更新显示和数据
                      */
-                    $timeout(function () {
-                        element.datetimepicker('update', initDate);
-                    });
-                }
+                        //$timeout(function () {
+                    element.datetimepicker('update', initDate);
+                    //});
+                });
 
             }
         };
@@ -82,23 +81,22 @@ angular.module('uv.directive.datetimepicker', [])
                 });
 
                 /**
-                 * scope中ngModel绑定的数据timestamp值
+                 * scope中ngModel绑定的数据timestamp值处理成显示时间格式
                  */
-                var initTimestamp = scope[attrs.ngModel];
-                if (initTimestamp) {
+                scope.$watch(attrs.ngModel, function (nv) {
                     /**
                      * 生成ngModel绑定的值对应的Date对象
                      * @type {Date}
                      */
                     var initDate = new Date();
-                    initDate.setTime(initTimestamp);
+                    initDate.setTime(nv);
                     /**
                      * 在angular完成所有操作后,按上面datetimepicker配置的规则更新显示和数据
                      */
-                    $timeout(function () {
-                        element.datetimepicker('update', initDate);
-                    });
-                }
+                        //$timeout(function () {
+                    element.datetimepicker('update', initDate);
+                    //});
+                });
 
 
             }
