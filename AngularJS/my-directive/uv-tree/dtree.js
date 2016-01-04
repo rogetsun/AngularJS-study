@@ -36,6 +36,9 @@
  isSelectedNode             function    add         用于替换判断selectedNode值的地方
  addNode                    function    modify      外部程序调用add节点时，增加节点是否选中功能
  Node.userData              var         add         用于存放用户树结构复杂的数据。同时在getSelect中返回给用户。
+
+ 20160104:
+ 修改单选bug,再次支持单选
  */
 
 
@@ -198,8 +201,8 @@ dTree.prototype.node = function (node, nodeId) {
             + '" onClick="javascript:' + this.obj + '.cc(&quot;' + node._ai
             + '&quot;,&quot;' + node._p._ai + '&quot;);" ' + (node._is ? "checked" : '') + '/>';
     }
-    if (node.url) {
-        str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + node.url + '"';
+    if (!this.config.multiSelect || node.url) {
+        str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + (node.url || 'javascript:;') + '"';
         if (node.title) str += ' title="' + node.title + '"';
         if (node.target) str += ' target="' + node.target + '"';
         if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" ';
@@ -210,7 +213,7 @@ dTree.prototype.node = function (node, nodeId) {
     else if ((!this.config.folderLinks || !node.url) && node._hc && node.pid != this.root.id)
         str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');" class="node">';
     str += node.name;
-    if (node.url || ((!this.config.folderLinks || !node.url) && node._hc)) str += '</a>';
+    if (!this.config.multiSelect || node.url || ((!this.config.folderLinks || !node.url) && node._hc)) str += '</a>';
     str += '</div>';
     if (node._hc) {
         str += '<div id="d' + this.obj + nodeId + '" class="clip" style="display:' + ((this.root.id == node.pid || node._io) ? 'block' : 'none') + ';">';
@@ -267,9 +270,9 @@ dTree.prototype.getSelected = function () {
     } else {
         var tmpNode = this.aNodes[this.selectedNode[0]];
         if (tmpNode.userData) {
-            return tmpNode.userData;
+            return [tmpNode.userData];
         } else {
-            return {'id': tmpNode.id, 'name': tmpNode.name};
+            return [{'id': tmpNode.id, 'name': tmpNode.name}];
         }
     }
 
@@ -486,7 +489,6 @@ dTree.prototype.cc_parent = function (parent_node_ai, select_flag) {
 
 dTree.prototype.cc_children = function (node_ai, select_flag) {
     var node = this.aNodes[node_ai];
-    console.log(node);
     document.getElementById("c" + this.obj + node.id).checked = select_flag;
     if (!select_flag) {
         this.removeSeletedNode(node_ai);
@@ -507,9 +509,7 @@ dTree.prototype.cc = function (node_ai, parent_node_ai) {
     //首先获取这个多选框的id
     var node = this.aNodes[node_ai];
     var cs = document.getElementById("c" + this.obj + node.id).checked;
-    console.log('children');
     this.cc_children(node_ai, cs);
-    console.log('parent');
     this.cc_parent(parent_node_ai, cs);
 //    var n;
 //    var len = this.aNodes.length;
