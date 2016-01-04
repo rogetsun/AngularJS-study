@@ -29,11 +29,13 @@ angular.module('uv.directive.datetimepicker', [])
                     format: format,
                     showMeridian: true
                 }).on('changeDate', function (e) {
-                    ngModelCtrl.$setViewValue(e.date.getTime());
+                    var time = e.date.getTime();
+                    time -= 1000 * 60 * 60 * 8;//处理时区,不需要语言为zh-CN时默认+8时区
+                    ngModelCtrl.$setViewValue(time);
                     scope.$apply();
                 });
                 /**
-                 * scope中ngModel绑定的数据timestamp值处理成显示时间格式
+                 * scope中ngModel绑定的数据timestamp值
                  */
                 var watch = scope.$watch(attrs.ngModel, function (nv) {
                     /**
@@ -45,9 +47,12 @@ angular.module('uv.directive.datetimepicker', [])
                     /**
                      * 在angular完成所有操作后,按上面datetimepicker配置的规则更新显示和数据
                      */
+                        //$timeout(function () {
                     element.datetimepicker('update', initDate);
                     watch();
+                    //});
                 });
+
             }
         };
     }])
@@ -74,12 +79,14 @@ angular.module('uv.directive.datetimepicker', [])
                     //initialDate: initDateStr,//怀疑因为angular导致element.val()数据又被覆盖
                     todayHighlight: true
                 }).on('changeDate', function (e) {
-                    ngModelCtrl.$setViewValue(e.date.getTime());
+                    var time = e.date.getTime();
+                    time -= 1000 * 60 * 60 * 8;//处理时区,不需要语言为zh-CN时默认+8时区
+                    ngModelCtrl.$setViewValue(time);
                     scope.$apply();
                 });
 
                 /**
-                 * scope中ngModel绑定的数据timestamp值处理成显示时间格式
+                 * scope中ngModel绑定的数据timestamp值
                  */
                 var watch = scope.$watch(attrs.ngModel, function (nv) {
                     /**
@@ -91,9 +98,13 @@ angular.module('uv.directive.datetimepicker', [])
                     /**
                      * 在angular完成所有操作后,按上面datetimepicker配置的规则更新显示和数据
                      */
+                        //$timeout(function () {
                     element.datetimepicker('update', initDate);
                     watch();
+                    //});
                 });
+
+
             }
         };
     }]);
