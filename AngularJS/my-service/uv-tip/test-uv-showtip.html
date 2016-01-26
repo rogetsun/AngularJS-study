@@ -16,14 +16,16 @@
 <script src="../../../assets/angular/angular.js"></script>
 <script src="uv-tip.js"></script>
 <script>
-angular.module('app',['uv.service.tip'])
-        .controller('ctrl', ['$scope', 'uvTip', function ($scope, uvTip) {
-            $scope.show = function () {
-                uvTip.showTip($scope.msg, 2000);
-            };
-            $scope.hide = function () {
-                uvTip.hideTip();
-            }
-        }]);
+    angular.module('app', ['uv.service.tip'])
+            .controller('ctrl', ['$scope', 'uvTip', function ($scope, uvTip) {
+                $scope.show = function () {
+                    uvTip.showTip($scope.msg, 2000).then(function () {
+                        console.log('over');
+                    });
+                };
+                $scope.hide = function () {
+                    uvTip.hideTip();
+                }
+            }]);
 </script>
 </html>
