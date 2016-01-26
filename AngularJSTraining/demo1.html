@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angular</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/ngDialog/css/ngDialog.min.css">
+    <link rel="stylesheet" href="../assets/ngDialog/css/ngDialog-theme-plain.min.css">
+    <link rel="stylesheet" href="../assets/ngDialog/css/ngDialog-theme-default.min.css">
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="container">
+    <div class="page-header">angular</div>
+    <h1>{{a}}</h1>
+    <input type="text" ng-model="a" class="form-control">
+    <hr>
+    <button ng-click="getUser()" class="btn btn-primary">getUser</button>
+    <form class="form-inline">
+        <div class="form-group form-group-sm">
+            <label for>Email address</label>
+            <input type="text" class="form-control" ng-model="tmpUser.id" placeholder="请输入id">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="text" class="form-control" placeholder="请输入名称" ng-model="tmpUser.name">
+        </div>
+        <a href="" class="btn btn-default" ng-click="addUser(tmpUser)">Sign in</a>
+    </form>
+
+
+    <table class="table table-striped table-hover table-condensed">
+        <tr ng-show="!users || users.length == 0">
+            <td colspan="3">无用户</td>
+        </tr>
+        <tr ng-repeat="u in users" class="success">
+            <td class="col-sm-2">{{u.id}}</td>
+            <td class="col-sm-9">{{u.name}}</td>
+            <td class="col-sm-1">
+                <a href=""><i class="glyphicon glyphicon-remove"></i></a>
+                <a href=""><i class="glyphicon glyphicon-pencil"></i></a>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <a href="" ng-click="loading()">loading</a>
+    <a href="" ng-click="dialog()">dialog</a>
+    <hr>
+    <div class="row">
+        <span class="col-md-4 col-sm-6 col-xs-12 bg-success">col-lg-4 col-sm-6 col-xs-12</span>
+        <span class="col-md-4 col-sm-6 col-xs-12 bg-success">col-lg-4 col-sm-6 col-xs-12</span>
+        <span class="col-md-4 col-sm-6 col-xs-12 bg-success">col-lg-4 col-sm-6 col-xs-12</span>
+    </div>
+
+</div>
+</body>
+<script src="../assets/jquery/jquery-1.11.2.min.js"></script>
+<script src="../assets/angular/angular.js"></script>
+<script src="../AngularJS/my-service/uv-loading/uv-loading.js"></script>
+<script src="../assets/ngDialog/js/ngDialog.min.js"></script>
+<script src="../AngularJS/my-service/uv-dialog/uv-dialog.js"></script>
+
+
+<script>
+    angular.module('app', ['uv.service', 'uv.service.loading', 'uv.service.dialog'])
+            .config(['uvLoadingProvider', function (uvpro) {
+                uvpro.setLoadingGif("../AngularJS/my-service/uv-loading/loading.gif");
+            }])
+            .controller('ctrl', ['$scope', '$http', 'myService', 'uvLoading', 'uvDialog',
+                function ($scope, $http, myService, uvLoading, uvDialog) {
+                    $scope.a = 'aaa';
+                    $scope.users = [];
+                    $scope.getUser = function () {
+                        myService.getUser().then(function (data) {
+                            console.log(data);
+                            $scope.users = data;
+                        })
+                    };
+                    $scope.addUser = function () {
+                        $scope.users.push(angular.copy($scope.tmpUser));
+                    };
+                    $scope.loading = function () {
+                        uvLoading.loading(3000);
+                    };
+                    $scope.dialog = function () {
+                        uvDialog.confirm("fdsafdsaf").then(function (ok) {
+                            if (ok) {
+                                console.log('save')
+                            } else {
+                                uvDialog.show('取消保存').then(function () {
+                                    console.log("fdsafdsa");
+                                })
+                            }
+                        });
+                    }
+                }])
+    ;
+
+    angular.module('uv.service', [])
+            .service('myService', ['$http', function ($http) {
+                this.getUser = function () {
+                    return $http.get('data.json').then(function (res) {
+                        return res.data;
+                    });
+                };
+            }]);
+</script>
+</html>
