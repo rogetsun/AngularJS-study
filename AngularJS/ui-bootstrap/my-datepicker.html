@@ -15,11 +15,12 @@
 <hr/>
 
 <input ng-model="dt" datepicker-popup="yyyy/MM/dd" is-open="opened" datepicker-mode="month" ng-click="opened=true"
-       close-text="关闭" datepicker-options="{showWeeks:false}" show-button-bar="true"
+       close-text="关闭" current-text="今天哈" clear-text="清除" datepicker-options="{showWeeks:false}"
+       show-button-bar="true" close-on-date-selection="false" append-to-body="false"
        readonly>
 
 <hr/>
-<datepicker show-weeks="false" ng-model="dt"></datepicker>
+<datepicker show-weeks="true" ng-model="dt"></datepicker>
 
 
 </datepicker>
