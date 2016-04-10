@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>loading bar</title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/angular/angular-loading-bar/loading-bar.css">
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<span id="loading-bar-container"></span>
+<div class="well">
+    <button class="btn btn-sm btn-primary" ng-click="start()">start</button>
+    <button class="btn btn-sm btn-danger" ng-click="stop()">stop</button>
+    <button class="btn btn-sm btn-info" ng-click="auto()">auto</button>
+</div>
+</body>
+<script src="../../assets/jquery/jquery-1.11.2.min.js"></script>
+<script src="../../assets/angular/angular.js"></script>
+<script src="../../assets/angular/angular-animate.min.js"></script>
+<script src="../../assets/angular/angular-loading-bar/loading-bar.js"></script>
+<script>
+    /**
+     * angular.module('angular-loading-bar', ['cfp.loadingBarInterceptor']);
+     * angular.module('cfp.loadingBarInterceptor', ['cfp.loadingBar'])
+     * 可以看出:
+     * cfp.loadingBar为核心loadingBar的模块
+     * cfp.loadingBarInterceptor增加$http请求时的loading
+     * angular-loading-bar为整体封装来一个模块名
+     */
+    angular.module('app', ['cfp.loadingBar', 'ngAnimate'])
+            .config(function (cfpLoadingBarProvider) {
+                /**
+                 * Turn the spinner on or off:
+                 */
+//                cfpLoadingBarProvider.includeSpinner = true;
+                /**
+                 * Turn the loading bar on or off:
+                 */
+                cfpLoadingBarProvider.includeBar = true;
+                /**
+                 * Customize the template:
+                 */
+//                cfpLoadingBarProvider.spinnerTemplate = '<div><span class="fa fa-spinner">Loading...</div>';
+                /**
+                 * Position the template:
+                 */
+//                cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
+//                cfpLoadingBarProvider.spinnerTemplate = '<div><span class="fa fa-spinner">Custom Loading Message...</div>';
+                /**
+                 * Latency Threshold
+                 */
+//                cfpLoadingBarProvider.latencyThreshold = 500;
+            })
+            .controller('ctrl', function ($scope, cfpLoadingBar) {
+                $scope.start = function () {
+                    cfpLoadingBar.start();
+                };
+
+                $scope.stop = function () {
+                    cfpLoadingBar.complete();
+                };
+
+                var timer, i;
+
+                function setProgress() {
+                    i += 1;
+                    console.log('set %d', i);
+                    cfpLoadingBar.set(i / 100);
+                    if (i >= 100) {
+                        cfpLoadingBar.complete();
+                        clearInterval(timer);
+                    }
+                }
+
+                $scope.auto = function () {
+                    i = 0;
+                    cfpLoadingBar.start();
+                    timer = setInterval(setProgress, 100);
+                }
+            })
+</script>
+</html>
