@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tree show</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <script src="../assets/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../assets/angular/angular.js"></script>
+    <style>
+        ul {
+            list-style: none;
+        }
+    </style>
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<div class="well">
+    <ul>
+        <li ng-repeat="n in tree.children" ng-click="go($event, n)">
+            <i class="glyphicon {{n.isShow?'glyphicon-triangle-right':'glyphicon-triangle-down'}} " ng-show="n.children"></i>
+            {{n.name}}
+            <ul ng-if="n.children" ng-show="n.isShow">
+                <li ng-repeat="t in n.children" ng-click="go($event,t)">
+                    {{t.name}}
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+</body>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                var list = $scope.treeList = [
+                    {name: 'name1', id: 1, pid: 0, state: 'name1'},
+                    {name: 'name2', id: 2, pid: 0},
+                    {name: 'name3', id: 3, pid: 0},
+                    {name: 'name4', id: 4, pid: 0, state: 'name4'},
+                    {name: 'name2.1', id: 5, pid: 2, state: 'name2.1'},
+                    {name: 'name3.1', id: 6, pid: 3, state: 'name3.1'}
+                ];
+
+                var root = {name: 'root', id: 0, pid: -1};
+                /**
+                 * 生成tree的json对象.格式:{ID:节点对象,id:节电对象....}
+                 * @type {{}}
+                 */
+                $scope.treeJSON = {};
+                $scope.treeJSON[root.id] = root;
+                for (var i = 0; i < $scope.treeList.length; i++) {
+                    $scope.treeJSON[$scope.treeList[i].id] = $scope.treeList[i];
+                }
+
+                /**
+                 * 生成树结构
+                 * @type {{name: string, id: number, pid: number}}
+                 */
+                $scope.tree = root;
+                for (var i = 0; i < list.length; i++) {
+                    var tmpTreeNode = list[i];
+                    if (!$scope.treeJSON[tmpTreeNode.pid].children) {
+                        $scope.treeJSON[tmpTreeNode.pid].children = [];
+                    }
+                    $scope.treeJSON[tmpTreeNode.pid].children.push(tmpTreeNode);
+                }
+
+                console.log($scope.tree);
+
+                $scope.go = function ($event, node) {
+//                    $event.preventDefault();
+                    $event.stopPropagation();
+                    if (node) {
+                        if (node.children) {
+                            node.isShow = !node.isShow;
+                        } else {
+                            console.log('state goto ' + node.state);
+                        }
+
+                    }
+                }
+
+            })
+</script>
+</html>

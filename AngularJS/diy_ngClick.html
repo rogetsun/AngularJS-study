@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ngclick test</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css">
+    <script src="../assets/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../assets/angular/angular.js"></script>
+    <script src="../AngularJS/my-directive/uv-click/uv-click.js"></script>
+
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<a href="" ng-click="test()" uv-sticky="20" view-ctrl="123" class="btn btn-primary">ngclick ok</a>
+<a href="" ng-click="test()" uv-sticky="20" class="btn btn-danger">ngclick error</a>
+</body>
+<script>
+    angular.module('app', ['uv.directive.click'])
+            .controller('ctrl', function ($scope) {
+                $scope.test = function () {
+                    console.log('test');
+                };
+                console.log(angular);
+            });
+
+</script>
+</html>
