@@ -1,0 +1,8 @@
+{
+  "name": "AngularJS",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "^1.5.3",
+    "angular-i18n": "^1.5.3"
+  }
+}
