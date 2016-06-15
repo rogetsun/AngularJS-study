@@ -36,7 +36,7 @@ angular.module('uv.directive.tree', [])
                 uvTreeNodeNameKey: '@',     //tree节点的json对象中表示名称的key
                 uvTreeNodeSelectedKey: '@', //tree节点的json对象中表示当前节点应该已被默认选中的key
                 uvTreeMultiSelect: '@',     //tree是否支持多选，现在单选有点问题,20160615解决
-                uvTreeSelectNodeFunc: '@'   //暂时没用
+                uvTreeSelectNodeFunc: '@'   //click某个节点时,调用的func。一个入参:节点数据对象
             },
             link: function ($scope, elem, attr) {
                 var treeScopeName = attr.uvTree || ("_tree" + parseInt(Math.random() * 100));
