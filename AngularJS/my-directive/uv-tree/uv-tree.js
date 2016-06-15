@@ -27,7 +27,7 @@ angular.module('uv.directive.tree', [])
     }])
     .directive('uvTree', ['$timeout', 'uvTreeConfig', function ($timeout, uvTreeConfig) {
         return {
-            restrict: 'EA',
+            restrict: 'A',
             template: '<div></div>',
             scope: {
                 uvTreeData: '=',            //tree的源数据
@@ -35,11 +35,15 @@ angular.module('uv.directive.tree', [])
                 uvTreeNodeParentIdKey: '@', //tree节点的json对象中表示父节点ID的key
                 uvTreeNodeNameKey: '@',     //tree节点的json对象中表示名称的key
                 uvTreeNodeSelectedKey: '@', //tree节点的json对象中表示当前节点应该已被默认选中的key
-                uvTreeMultiSelect: '@',     //tree是否支持多选，现在单选有点问题
-                uvTreeSelectNodeFunc: '&'   //暂时没用
+                uvTreeMultiSelect: '@',     //tree是否支持多选，现在单选有点问题,20160615解决
+                uvTreeSelectNodeFunc: '@'   //暂时没用
             },
             link: function ($scope, elem, attr) {
                 var treeScopeName = attr.uvTree || ("_tree" + parseInt(Math.random() * 100));
+                var selectNodeFn;
+                if ($scope.uvTreeSelectNodeFunc) {
+                    selectNodeFn = $scope.$parent[$scope.uvTreeSelectNodeFunc.split('(')[0]];
+                }
                 window[treeScopeName] = new dTree(treeScopeName, uvTreeConfig.imgFolder);
                 $scope.$parent[treeScopeName] = window[treeScopeName];
                 window[treeScopeName].config.multiSelect = !!$scope.uvTreeMultiSelect;
@@ -49,12 +53,20 @@ angular.module('uv.directive.tree', [])
                     pid = $scope.uvTreeNodeParentIdKey,
                     name = $scope.uvTreeNodeNameKey,
                     selectKey = $scope.uvTreeNodeSelectedKey;
+
+                window._selectNode = function (id) {
+                    if (selectNodeFn) {
+                        selectNodeFn($scope.treeJSON[id]);
+                    }
+                };
+
+                $scope.treeJSON = {};
                 angular.forEach($scope.uvTreeData, function (v) {
-                    window[treeScopeName].add(v[id], v[pid], v[name], '', '', v[selectKey], v, true);
+                    $scope.treeJSON[v[id]] = v;
+                    window[treeScopeName].add(v[id], v[pid], v[name], 'javascript:_selectNode(' + v[id] + ');', '', v[selectKey], v, false);
                 });
                 var treeHtml = window[treeScopeName].toString();
                 elem.html(treeHtml);
-
             }
         }
     }]);

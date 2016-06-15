@@ -39,6 +39,8 @@
 
  20160104:
  修改单选bug,再次支持单选
+ 20160615:
+ 修改bug,兼容多选单选
  */
 
 
@@ -72,7 +74,13 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open, isSelecte
     this.userData = tmpData || null;//用户树节点的复杂数据信息
 }
 
-// Tree object, songyw add multiSelect flag 2013/3/12 11:15:56
+//
+/**
+ * Tree object, songyw add multiSelect flag 2013/3/12 11:15:56
+ * 20160615 songyw add clickNodeCallBackFn,单击节点事件。clickNodeCallBackFn(node.userData, node._is)
+ * @param objName
+ * @param iconPrefix
+ */
 function dTree(objName, iconPrefix) {
     this.config = {
         target: null,
@@ -204,9 +212,9 @@ dTree.prototype.node = function (node, nodeId) {
     if (!this.config.multiSelect || node.url) {
         str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + (node.url || 'javascript:;') + '"';
         if (node.title) str += ' title="' + node.title + '"';
-        if (node.target) str += ' target="' + node.target + '"';
-        if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" ';
-        if (this.config.useSelection && ((node._hc && this.config.folderLinks) || !node._hc))
+        // if (node.target) str += ' target="' + node.target + '"';
+        // if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" ';
+        if (!this.config.multiSelect && this.config.useSelection && ((node._hc && this.config.folderLinks) || !node._hc))
             str += ' onclick="javascript: ' + this.obj + '.s(' + nodeId + ');"';
         str += '>';
     }
@@ -346,6 +354,8 @@ dTree.prototype.s = function (id) {
     //    this.selectedNode = id;
     //
     //}
+
+
     if (cn._is) {
 
         var eOld = document.getElementById("s" + this.obj + id);
@@ -453,10 +463,10 @@ dTree.prototype.closeAllChildren = function (node) {
 
 // Change the status of a node(open or closed)
 dTree.prototype.nodeStatus = function (status, id, bottom) {
-    eDiv = document.getElementById('d' + this.obj + id);
-    eJoin = document.getElementById('j' + this.obj + id);
+    var eDiv = document.getElementById('d' + this.obj + id);
+    var eJoin = document.getElementById('j' + this.obj + id);
     if (this.config.useIcons) {
-        eIcon = document.getElementById('i' + this.obj + id);
+        var eIcon = document.getElementById('i' + this.obj + id);
         eIcon.src = (status) ? this.aNodes[id].iconOpen : this.aNodes[id].icon;
     }
     eJoin.src = (this.config.useLines) ?
@@ -510,7 +520,8 @@ dTree.prototype.cc = function (node_ai, parent_node_ai) {
     var node = this.aNodes[node_ai];
     var cs = document.getElementById("c" + this.obj + node.id).checked;
     this.cc_children(node_ai, cs);
-    this.cc_parent(parent_node_ai, cs);
+    // this.cc_parent(parent_node_ai, cs); //根据实际需求决定,当前项目不需要同时选中父级节点
+
 //    var n;
 //    var len = this.aNodes.length;
 //
@@ -577,7 +588,7 @@ if (!Array.prototype.push) {
 }
 if (!Array.prototype.pop) {
     Array.prototype.pop = function array_pop() {
-        lastElement = this[this.length - 1];
+        var lastElement = this[this.length - 1];
         this.length = Math.max(this.length - 1, 0);
         return lastElement;
     }
