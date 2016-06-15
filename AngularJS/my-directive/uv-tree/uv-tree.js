@@ -39,34 +39,39 @@ angular.module('uv.directive.tree', [])
                 uvTreeSelectNodeFunc: '@'   //click某个节点时,调用的func。一个入参:节点数据对象
             },
             link: function ($scope, elem, attr) {
-                var treeScopeName = attr.uvTree || ("_tree" + parseInt(Math.random() * 100));
-                var selectNodeFn;
-                if ($scope.uvTreeSelectNodeFunc) {
-                    selectNodeFn = $scope.$parent[$scope.uvTreeSelectNodeFunc.split('(')[0]];
-                }
-                window[treeScopeName] = new dTree(treeScopeName, uvTreeConfig.imgFolder);
-                $scope.$parent[treeScopeName] = window[treeScopeName];
-                window[treeScopeName].config.multiSelect = !!$scope.uvTreeMultiSelect;
-                window[treeScopeName].config.checkbox = !!$scope.uvTreeMultiSelect;
-                window[treeScopeName].config.useIcons = false;
-                var id = $scope.uvTreeNodeIdKey,
-                    pid = $scope.uvTreeNodeParentIdKey,
-                    name = $scope.uvTreeNodeNameKey,
-                    selectKey = $scope.uvTreeNodeSelectedKey;
+                $scope.$watch('uvTreeData', function (v) {
+                    if (v) {
+                        var treeScopeName = attr.uvTree || ("_tree" + parseInt(Math.random() * 100));
+                        var selectNodeFn;
+                        if ($scope.uvTreeSelectNodeFunc) {
+                            selectNodeFn = $scope.$parent[$scope.uvTreeSelectNodeFunc.split('(')[0]];
+                        }
+                        window[treeScopeName] = new dTree(treeScopeName, uvTreeConfig.imgFolder);
+                        $scope.$parent[treeScopeName] = window[treeScopeName];
+                        window[treeScopeName].config.multiSelect = !!$scope.uvTreeMultiSelect;
+                        window[treeScopeName].config.checkbox = !!$scope.uvTreeMultiSelect;
+                        window[treeScopeName].config.useIcons = false;
+                        var id = $scope.uvTreeNodeIdKey,
+                            pid = $scope.uvTreeNodeParentIdKey,
+                            name = $scope.uvTreeNodeNameKey,
+                            selectKey = $scope.uvTreeNodeSelectedKey;
 
-                window._selectNode = function (id) {
-                    if (selectNodeFn) {
-                        selectNodeFn($scope.treeJSON[id]);
+                        window._selectNode = function (id) {
+                            if (selectNodeFn) {
+                                selectNodeFn($scope.treeJSON[id]);
+                            }
+                        };
+
+                        $scope.treeJSON = {};
+                        angular.forEach($scope.uvTreeData, function (v) {
+                            $scope.treeJSON[v[id]] = v;
+                            window[treeScopeName].add(v[id], v[pid], v[name], 'javascript:_selectNode(' + v[id] + ');', '', v[selectKey], v, false);
+                        });
+                        var treeHtml = window[treeScopeName].toString();
+                        elem.html(treeHtml);
                     }
-                };
 
-                $scope.treeJSON = {};
-                angular.forEach($scope.uvTreeData, function (v) {
-                    $scope.treeJSON[v[id]] = v;
-                    window[treeScopeName].add(v[id], v[pid], v[name], 'javascript:_selectNode(' + v[id] + ');', '', v[selectKey], v, false);
-                });
-                var treeHtml = window[treeScopeName].toString();
-                elem.html(treeHtml);
+                }, true);
             }
         }
     }]);
