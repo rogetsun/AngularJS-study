@@ -12,7 +12,7 @@
  *
  */
 angular.module('uv.directive.tree', [])
-    .provider('uvTreeConfig', [function () {
+    .provider('uvTree', [function () {
         var imgFolder = "./img";
         return {
             setImgFolder: function (imgFolderPath) {
@@ -20,7 +20,15 @@ angular.module('uv.directive.tree', [])
             },
             $get: function () {
                 return {
-                    imgFolder: imgFolder
+                    imgFolder: imgFolder,
+                    defaultTreeName: '_tree_3380915',
+                    getTree: function (treeName) {
+                        return {
+                            getSelected: function () {
+                                return window[treeName] ? window[treeName].getSelected() : null;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -41,7 +49,7 @@ angular.module('uv.directive.tree', [])
             link: function ($scope, elem, attr) {
                 $scope.$watch('uvTreeData', function (v) {
                     if (v) {
-                        var treeScopeName = attr.uvTree || ("_tree" + parseInt(Math.random() * 100));
+                        var treeScopeName = attr.uvTree || uvTreeConfig.defaultTreeName;
                         var selectNodeFn;
                         if ($scope.uvTreeSelectNodeFunc) {
                             selectNodeFn = $scope.$parent[$scope.uvTreeSelectNodeFunc.split('(')[0]];
