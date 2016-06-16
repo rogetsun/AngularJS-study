@@ -278,9 +278,9 @@ dTree.prototype.getSelected = function () {
     } else {
         var tmpNode = this.aNodes[this.selectedNode[0]];
         if (tmpNode.userData) {
-            return [tmpNode.userData];
+            return tmpNode.userData;
         } else {
-            return [{'id': tmpNode.id, 'name': tmpNode.name}];
+            return {'id': tmpNode.id, 'name': tmpNode.name};
         }
     }
 
