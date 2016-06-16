@@ -64,7 +64,7 @@ angular.module('uv.directive.tree', [])
                             name = $scope.uvTreeNodeNameKey,
                             selectKey = $scope.uvTreeNodeSelectedKey;
 
-                        window._selectNode = function (id) {
+                        window[treeScopeName + "_selectNode"] = function (id) {
                             if (selectNodeFn) {
                                 selectNodeFn($scope.treeJSON[id]);
                             }
@@ -73,7 +73,7 @@ angular.module('uv.directive.tree', [])
                         $scope.treeJSON = {};
                         angular.forEach($scope.uvTreeData, function (v) {
                             $scope.treeJSON[v[id]] = v;
-                            window[treeScopeName].add(v[id], v[pid], v[name], 'javascript:_selectNode(' + v[id] + ');', '', v[selectKey], v, false);
+                            window[treeScopeName].add(v[id], v[pid], v[name], 'javascript:' + treeScopeName + '_selectNode(' + v[id] + ');', '', v[selectKey], v, true);
                         });
                         var treeHtml = window[treeScopeName].toString();
                         elem.html(treeHtml);
