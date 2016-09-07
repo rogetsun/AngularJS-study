@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ngRepeat in ngRepeat</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+</head>
+<body ng-app="app" ng-controller="ctrl">
+<table class="table table-condensed" ng-repeat="x in a" style="margin: 0;">
+    <!--<div ng-repeat="x in a" > 此处用div会不现实任何东西，只能放在table标签上循环-->
+    <tr ng-repeat="ar in arr[x.fid]">
+        <td>{{ar.id}}</td>
+        <td>{{ar.name}}</td>
+    </tr>
+    <!--</div>-->
+</table>
+</body>
+
+<script src="../assets/angular/angular.js"></script>
+<script>
+    angular.module('app', [])
+            .controller('ctrl', function ($scope) {
+                $scope.arr = {
+                    1: [
+                        {name: 'n1', id: 1}
+                        , {name: 'n2', id: 2}
+                        , {name: 'n0', id: 0}
+                    ],
+                    2: [{name: 'n3', id: 3}
+                        , {name: 'n4', id: 4}]
+                };
+
+                $scope.a = [{fid: 1, fn: 'a1'}, {fid: 2, fn: 'a2'}]
+            })
+</script>
+</html>
