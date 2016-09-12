@@ -16,7 +16,8 @@
 <div class="well">
     <ul>
         <li ng-repeat="n in tree.children" ng-click="go($event, n)">
-            <i class="glyphicon {{n.isShow?'glyphicon-triangle-right':'glyphicon-triangle-down'}} " ng-show="n.children"></i>
+            <i class="glyphicon {{n.isShow?'glyphicon-triangle-right':'glyphicon-triangle-down'}} "
+               ng-show="n.children"></i>
             {{n.name}}
             <ul ng-if="n.children" ng-show="n.isShow">
                 <li ng-repeat="t in n.children" ng-click="go($event,t)">
@@ -75,7 +76,6 @@
                         } else {
                             console.log('state goto ' + node.state);
                         }
-
                     }
                 }
 
