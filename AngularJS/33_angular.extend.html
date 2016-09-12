@@ -23,9 +23,10 @@
             .controller('ctrl', function ($scope) {
                 $scope.u = {id: 1, name: 1, age: 1};
                 $scope.u2 = {id: 2, name: 2, gender: 2};
-                $scope.u3 = {addr: 'fdsa'};
+                $scope.u3 = {addr: 'fdsa', name: 'u3'};
                 /**
                  * 将第2个参数开始的对象属性合并到第一个参数$scope.u中,相同属性会覆盖掉$scope.u的。
+                 * 属性覆盖会依次从右边往左边覆盖
                  */
                 angular.extend($scope.u, $scope.u2, $scope.u3);
 
