@@ -12,7 +12,7 @@
  *
  */
 angular.module('uv.directive.tree', [])
-    .provider('uvTree', [function () {
+    .provider('uvTreeService', [function () {
         var imgFolder = "./img";
         return {
             setImgFolder: function (imgFolderPath) {
@@ -33,7 +33,8 @@ angular.module('uv.directive.tree', [])
             }
         }
     }])
-    .directive('uvTree', ['$timeout', 'uvTree', function ($timeout, uvTree) {
+    .directive('uvTree', ['$timeout', 'uvTreeService', function ($timeout, uvTreeService) {
+
         return {
             restrict: 'A',
             template: '<div></div>',
@@ -49,12 +50,12 @@ angular.module('uv.directive.tree', [])
             link: function ($scope, elem, attr) {
                 $scope.$watch('uvTreeData', function (v) {
                     if (v) {
-                        var treeScopeName = attr.uvTree || uvTree.defaultTreeName;
+                        var treeScopeName = attr.uvTree || uvTreeService.defaultTreeName;
                         var selectNodeFn;
                         if ($scope.uvTreeSelectNodeFunc) {
                             selectNodeFn = $scope.$parent[$scope.uvTreeSelectNodeFunc.split('(')[0]];
                         }
-                        window[treeScopeName] = new dTree(treeScopeName, uvTree.imgFolder);
+                        window[treeScopeName] = new dTree(treeScopeName, uvTreeService.imgFolder);
                         $scope.$parent[treeScopeName] = window[treeScopeName];
                         window[treeScopeName].config.multiSelect = !!$scope.uvTreeMultiSelect;
                         window[treeScopeName].config.checkbox = !!$scope.uvTreeMultiSelect;
