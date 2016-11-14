@@ -36,7 +36,7 @@ angular.module('uv.directive.tree', [])
     .directive('uvTree', ['$timeout', 'uvTreeService', function ($timeout, uvTreeService) {
 
         return {
-            restrict: 'A',
+            restrict: 'EA',
             template: '<div></div>',
             scope: {
                 uvTreeData: '=',            //tree的源数据
