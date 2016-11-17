@@ -210,7 +210,7 @@ dTree.prototype.node = function (node, nodeId) {
             + '&quot;,&quot;' + node._p._ai + '&quot;);" ' + (node._is ? "checked" : '') + '/>';
     }
     if (!this.config.multiSelect || node.url) {
-        str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + (node.url || 'javascript:;') + '"';
+        str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection && !this.config.multiSelect) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + (node.url || 'javascript:;') + '"';
         if (node.title) str += ' title="' + node.title + '"';
         // if (node.target) str += ' target="' + node.target + '"';
         // if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" ';
