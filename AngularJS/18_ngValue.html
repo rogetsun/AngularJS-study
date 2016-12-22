@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html>
+
+<!--注意<input type="radio">用在ng-repeat内部，但是ng-model绑定的是repeat外部的变量，请注意用a.b的形式，而不要直接用b.-->
+
+<!--应该是ng-repeat会生成一个子scope，直接用ng-model="b"的话会在子scope生成一个变量b。而不会修改外部的b。-->
+
+
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
