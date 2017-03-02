@@ -5,29 +5,29 @@
     <title>AngularJS db-bind</title>
 </head>
 <body>
-    <div ng-controller="DBCtrl">
-        <getData howToGet="getData('{{name}}')" ></getData>
-    </div>
-    <div ng-controller="DBCtrl2">
-        <getData howToGet="getData2(name)" ></getData>
-    </div>
+<div ng-controller="DBCtrl">
+    <getData howToGet="getData('{{name}}')"></getData>
+</div>
+<div ng-controller="DBCtrl2">
+    <getData howToGet="getData2(name)"></getData>
+</div>
 </body>
 <script src="assets/angular/angular.min.js"></script>
 <script>
-    var app = angular.module("DBBindApp",[]);
+    var app = angular.module("DBBindApp", []);
 
-    app.controller("DBCtrl",["$scope",function($scope){
-        $scope.getData= function (a) {
-            console.log("getData by "+a);
+    app.controller("DBCtrl", ["$scope", function ($scope) {
+        $scope.getData = function (a) {
+            console.log("getData by " + a);
         }
-        $scope.name="name";
+        $scope.name = "name";
     }]);
 
-    app.controller("DBCtrl2",["$scope",function($scope){
-        $scope.getData2= function (a) {
-            console.log("getData2 by "+a);
+    app.controller("DBCtrl2", ["$scope", function ($scope) {
+        $scope.getData2 = function (a) {
+            console.log("getData2 by " + a);
         }
-        $scope.name="name2";
+        $scope.name = "name2";
     }]);
 
     app.directive("getdata", function () {
