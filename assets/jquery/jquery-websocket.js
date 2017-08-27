@@ -3,11 +3,16 @@
  */
 ;(function ($) {
     function WS(url, callbacks) {
-        var host = window.location.host;
-        var path = window.location.pathname;
-        var webp = path.substring(0, path.substring(1).indexOf("/") + 1);
-        //var webp="/attendance";
-        this.websocket = new WebSocket("ws://" + host + webp + "/ws" + url);
+        var tmpUrl = "";
+        if (url && url.indexOf("ws://") === 0) {
+            tmpUrl = url;
+        } else {
+            var host = window.location.host;
+            var path = window.location.pathname;
+            var webp = path.substring(0, path.substring(1).indexOf("/") + 1);
+            tmpUrl = "ws://" + host + webp + "/ws" + url;
+        }
+        this.websocket = new WebSocket(tmpUrl);
         var _this = this;
         if (callbacks) {
             if (callbacks.onmessage) {
@@ -32,6 +37,7 @@
             }
         }
     }
+
     /**
      * 关闭websocket
      * @param code
@@ -40,6 +46,15 @@
     WS.prototype.close = function (code, reason) {
         this.websocket.close(code, reason);
     };
+
+    WS.prototype.send = function (text) {
+        this.websocket.send(text);
+    };
+
+    WS.prototype.readyState = function () {
+        return this.websocket.readyState;
+    };
+
     $.extend({
         websocket: function (url, callbacks) {
             return new WS(url, callbacks);
