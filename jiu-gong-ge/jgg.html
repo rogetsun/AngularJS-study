@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>九宫格计算器</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/node_modules/angular-material/angular-material.min.css">
+</head>
+<body ng-app="jggApp" ng-controller="jggController">
+<div layout="column">
+    <div layout="row" layout-align="center center">
+        <md-select ng-model="jgg" aria-label="jgg" flex="9" ng-change="changeJgg()">
+            <md-option ng-repeat="j in jggs" ng-value="j">{{j.name}}</md-option>
+        </md-select>
+    </div>
+    <md-divider/>
+
+    <div layout="column" layout-align="center center">
+        <md-card>
+            <table class="table table-bordered table-condensed">
+                <thead>
+                <th></th>
+                <th style="text-align: center;" ng-repeat="tr in numbers">{{$index+1}}</th>
+                </thead>
+                <tr ng-repeat="tr in numbers">
+                    <td style="font-weight: 600;vertical-align: middle;">{{$index+1}}</td>
+                    <td ng-repeat="td in tr track by $index" style="height: 40px;width:40px;vertical-align: middle;"
+                        ng-style="{backgroundColor:td.flag?'#4892bc':'white'}">
+                        <input ng-model="td.value"
+                               style="width: 40px;outline: none;text-align: center;background-color: transparent;border:none;"
+                               ng-keypress="shouldBeNumber($event)"
+                               ng-change="checkInput($parent.$index, $index)">
+                    </td>
+                </tr>
+            </table>
+            <md-card-foot layout="row" layout-align="center center">
+                <md-button ng-disabled="calFlag" class="md-button md-raised md-warn" ng-click="cal()">
+                    {{calFlag?"计算中...":"计算"}}
+                </md-button>
+                <md-button class="md-button md-primary" ng-disabled="calFlag" ng-click="changeJgg()">重置</md-button>
+            </md-card-foot>
+        </md-card>
+
+    </div>
+
+</div>
+</body>
+<script src="../assets/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../assets/node_modules/angular/angular.js"></script>
+<script src="../assets/node_modules/angular-material/angular-material.min.js"></script>
+<script src="../assets/node_modules/angular-animate/angular-animate.min.js"></script>
+<script src="../assets/node_modules/angular-messages/angular-messages.min.js"></script>
+<script src="../assets/node_modules/angular-aria/angular-aria.min.js"></script>
+<script>
+    angular.module("jggApp", ["ngMaterial"]);
+    angular.module("jggApp").controller("jggController", function ($scope, $timeout) {
+        //九宫格列坐标显示
+        $scope.chr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        //多少种宫格
+        $scope.jggs = [{idx: 4, name: '四宫格'}, {idx: 6, name: '六宫格'}, {idx: 9, name: '九宫格'}, {idx: 16, name: '十六宫格'}];
+        //当前使用那种宫格
+        $scope.jgg = $scope.jggs[0];
+        //是否在计算九宫格结果中标志位
+        $scope.calFlag = false;
+
+        //切换其他宫格调用方法，生成对用宫格的二维数组
+        $scope.changeJgg = function () {
+            $scope.numbers = generate();
+            var no = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,";
+            $scope.no = no.substr(0, $scope.jgg.idx * 2 - 1).split(",").map(function (n) {
+                return parseInt(n);
+            });
+        };
+        /**
+         * 生成对应几宫格的二维数组
+         * */
+        function generate() {
+            var numbers = [];
+            for (var i = 0; i < $scope.jgg.idx; i++) {
+                numbers[i] = [];
+                for (var j = 0; j < $scope.jgg.idx; j++) {
+                    numbers[i][j] = {flag: false};
+                }
+            }
+            return numbers;
+        }
+
+
+        /**
+         * 校验输入的数字必须小于等于宫格的维数
+         * */
+        $scope.checkInput = function (row, col) {
+            if ($scope.numbers[row][col].value) {
+                $scope.numbers[row][col].flag = true;
+                if ($scope.numbers[row][col].value > $scope.jgg.idx) {
+                    $scope.numbers[row][col].value = "";
+                    $scope.numbers[row][col].flag = false;
+                }
+            } else {
+                $scope.numbers[row][col].flag = false;
+            }
+
+        };
+
+        /**
+         * 校验输入的必须是数字
+         * */
+        $scope.shouldBeNumber = function ($event, cell) {
+            if (!parseInt($event.key)) {
+                $event.preventDefault();
+            }
+        };
+
+//        var watcher = $scope.$watch("numbers", function (nv, ov) {
+//            var str = "";
+//            angular.forEach(nv, function (v) {
+//                angular.forEach(v, function (cell) {
+//                    str += (cell.value ? cell.value : "") + ",";
+//                });
+//                str += "\n";
+//            });
+//            console.log(str);
+//        }, true);
+
+        //计算九宫格应填写数字
+        $scope.cal = function () {
+//            watcher();
+            $scope.calFlag = true;
+            $timeout(function () {
+
+                //二维数组，每行剩余可能的数字
+                var mayBeNum = [];
+                //过滤每行可能的剩余数字
+                for (var i = 0; i < $scope.jgg.idx; i++) {
+                    //先填认为每行全没填写数字，然后删除掉用户填写上的数字
+                    mayBeNum[i] = $scope.no.slice();
+                    for (var j = 0; j < $scope.jgg.idx; j++) {
+                        if ($scope.numbers[i][j] && $scope.numbers[i][j].flag) {
+//                        console.log($scope.chr[i] + (j + 1) + ":" + (mayBeNum[i].indexOf($scope.numbers[i][j].value)));
+                            mayBeNum[i].splice(mayBeNum[i].indexOf(parseInt($scope.numbers[i][j].value)), 1);
+                        }
+                    }
+                }
+                console.log("mayBeNum:");
+                console.table(mayBeNum);
+                //生成每行剩余数字的排列组合,三围数组
+                console.log("mayBeNumOrders:");
+                var mayBeNumOrders = [];
+                for (var i = 0; i < mayBeNum.length; i++) {
+//                    console.log("rows orders:" + i);
+                    mayBeNumOrders[i] = generateOrder(mayBeNum[i], null, 0, 0);
+//                    console.table(mayBeNumOrders[i]);
+                }
+
+                //筛除已经不可能的排列组合
+                filterMayBeNumberOrders($scope.numbers, mayBeNumOrders);
+
+                var c = 1;
+                mayBeNumOrders.forEach(function (row) {
+                    c *= row.length;
+                });
+                console.log("共有" + c + "可能的组合!!!");
+                //遍历尝试填写数字
+                if (addNumber($scope.numbers, mayBeNumOrders, 0)) {
+                    console.table($scope.numbers.map(function (row) {
+                        return row.map(function (cell) {
+                            return cell.value;
+                        });
+                    }));
+                    console.log("ok");
+                } else {
+                    console.error("cannot calculate numbers");
+                }
+                $scope.calFlag = false;
+            }, 100)
+        };
+
+        $scope.changeJgg();
+
+
+        /**
+         * 以下为计算九宫格填写数字的相关方法
+         * */
+
+        function filterMayBeNumberOrders(numbers, mayBeNumberOrders) {
+            for (var col = 0; col < numbers.length; col++) {
+                var colNums = [];
+                var rows = [];
+                for (var row = 0; row < numbers.length; row++) {
+                    if (numbers[row][col].flag) {
+                        colNums.push(parseInt(numbers[row][col].value));
+                        rows.push(row);
+                    }
+                }
+                if (colNums.length > 0) {
+                    for (var row = 0; row < numbers.length; row++) {
+                        if (rows.indexOf(row) > -1)continue;
+                        for (var i = 0; i < mayBeNumberOrders[row].length; i++) {
+                            addSingleRowNumber(numbers[row], mayBeNumberOrders[row][i]);
+                            if (colNums.indexOf(parseInt(numbers[row][col].value)) > -1) {
+                                mayBeNumberOrders[row].splice(i, 1);
+                                i--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * 给某一行填写剩余数字的各种排列组合。
+         * 填写到最后一行会校验是否填写正确；未填写到最后一行，直接递归调用填写下一行
+         *
+         * @param numbers N宫格的二维矩阵
+         * @param mayBeNumOrders 每行剩余可填写数字排列组合的三围矩阵，一维每行，二维每组剩余数字组合，三围剩余数字数组
+         * @param rowIdx 当前要填写的行
+         *
+         * @return boolean 返回true认为填写成功
+         **/
+        function addNumber(numbers, mayBeNumOrders, rowIdx) {
+            if (!rowIdx)rowIdx = 0;
+
+            for (var i = 0; i < mayBeNumOrders[rowIdx].length; i++) {
+                if (addSingleRowNumberAndCheck(numbers[rowIdx], mayBeNumOrders[rowIdx][i], numbers, rowIdx)) {
+                    if (rowIdx < numbers.length - 1) {
+                        if (addNumber(numbers, mayBeNumOrders, rowIdx + 1)) {
+                            return true;
+                        }
+                    } else {
+                        if (checkNumbers(numbers)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * 校验每列累加和是否和行相等，相等认为填写正确
+         **/
+        function checkNumbers(numbers) {
+//            console.log("checkNumbers:");
+//            console.table(numbers);
+            for (var col = 0; col < numbers[0].length; col++) {
+                var tmpArr = $scope.no.slice();
+                for (var row = 0; row < numbers.length; row++) {
+                    var idx = tmpArr.indexOf(parseInt(numbers[row][col].value));
+                    if (idx > -1) {
+                        tmpArr.splice(idx, 1);
+                    }
+                }
+                if (tmpArr.length > 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * 给单行填写可能的排列组合，并根据本行之前的填写的行校验本行
+         * */
+        function addSingleRowNumberAndCheck(row, mayBeNums, numbers, rowIdx) {
+            for (var col = 0; col < numbers.length; col++) {
+                var colNums = [];
+                for (var i = 0; i < rowIdx; i++) {
+                    colNums.push(parseInt(numbers[i][col].value));
+                }
+                if (colNums.indexOf(mayBeNums[col]) > -1) {
+                    return false;
+                }
+            }
+            return addSingleRowNumber(row, mayBeNums);
+        }
+
+        /**
+         * 给单行填写可能的数字
+         **/
+        function addSingleRowNumber(row, mayBeNums) {
+            //todo 填写时直接过滤不可能的排列组合
+            var idx = 0;
+            for (var i = 0; i < row.length; i++) {
+                if (!row[i].flag) {
+                    row[i].value = mayBeNums[idx++];
+                }
+            }
+            return true;
+        }
+
+        /**
+         * 计算长度为len的数组的排列组合个数，即：1*2*3*4
+         * @param len
+         * @return number
+         * */
+        function getPaiXuZuHeCount(len) {
+            var c = 1;
+            for (var i = 2; i <= len; i++) {
+                c *= i;
+            }
+            return c;
+        }
+
+
+        /**
+         * 生成排列组合二维数组的递归函数
+         * 1,2,3将会生成以下二维数组：
+         *
+         *           y=0    y=1     y=2
+         *      x=0  1      2       3
+         *      x=1  1      3       2
+         *      x=2  2      1       3
+         *      x=3  2      3       1
+         *      x=4  3      1       2
+         *      x=5  3      2       1
+         *
+         * 过程：假设nums=[1,2,3]
+         *
+         *      填写 y=0 x=0,1 的位置nums[0]=1,递归调用(nums=[2,3],zuhe,0,1)   @1
+         *      填写 y=0,x=2,3 的位置nums[1]=2,递归调用(nums=[1,3],zuhe,2,1)   @2
+         *      填写 y=0,x=4,5 的位置nums[2]=3,递归调用(nums=[1,2],zuhe,4,1)   @3
+         *      //x=0,1是因为在一列上要循环1*2*..*(nums.length-1)次填写nums的同一个下标的数据，然后再次循环那么多次填写nums的下一个下标的数据
+         *
+         *      @1  填写 y=1,x=0 的位置nums[0]=2,递归调用(nums=[3],zuhe,0,2)   @1@1
+         *          填写 y=1,x=1 的位置nums[1]=3,递归调用(nums=[2],zuhe,1,2)   @1@2
+         *
+         *      @2  填写 y=1,x=2 的位置nums[0]=1,递归调用(nums=[3],zuhe,2,2)   @2@1
+         *          填写 y=1,x=3 的位置nums[1]=3,递归调用(nums=[1],zuhe,3,2)   @2@2
+         *
+         *      @3  填写 y=1,x=4 的位置nums[0]=1,递归调用(nums=[2],zuhe,4,2)   @3@1
+         *          填写 y=1,x=5 的位置nums[1]=2,递归调用(nums=[1],zuhe,5,2)   @3@1
+         *
+         *      @1@1    填写 y=2,x=0 的位置nums[0]=3
+         *      @1@2    填写 y=2,x=1 的位置nums[0]=2
+         *      @2@1    填写 y=2,x=2 的位置nums[0]=3
+         *      @2@2    填写 y=2,x=3 的位置nums[0]=1
+         *      @3@1    填写 y=2,x=4 的位置nums[0]=2
+         *      @3@2    填写 y=2,x=5 的位置nums[0]=1
+         *
+         *
+         *
+         * @param nums 源数据 eg:[1,2,3]
+         * @param zuhe 排列组合数组，二维数组入参可以给空的二维数组eg:[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+         * @param x 排列组合填写数字的纵向位置
+         * @param y 排列组合填写数字的横向位置
+         * @return zuhe
+         */
+        function generateOrder(nums, zuhe, x, y) {
+            if (!zuhe)zuhe = [];
+            if (nums && nums.length > 0) {
+                if (nums.length != 1) {
+                    var idx = 0;
+                    //第一列
+                    var mc = getPaiXuZuHeCount(nums.length - 1);//2
+                    for (var i = 0; i < getPaiXuZuHeCount(nums.length); i++) {
+                        if (!zuhe[x])zuhe[x] = [];
+                        zuhe[x++][y] = nums[idx];
+                        if (i % mc == mc - 1) {
+                            var tmpNum = nums.slice();
+                            tmpNum.splice(idx, 1);
+                            idx++;
+                            generateOrder(tmpNum, zuhe, x - mc, y + 1);
+                        }
+                    }
+                } else {
+                    if (!zuhe[x])zuhe[x] = [];
+                    zuhe[x][y] = nums[0];
+                }
+            }
+            return zuhe;
+        }
+    });
+</script>
+</html>

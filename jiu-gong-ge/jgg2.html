@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>九宫格计算器</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/node_modules/angular-material/angular-material.min.css">
+</head>
+<body ng-app="jggApp" ng-controller="jggController">
+<div layout="column">
+    <div layout="row" layout-align="center center">
+        <md-select ng-model="jgg" aria-label="jgg" flex="9" ng-change="changeJgg()">
+            <md-option ng-repeat="j in jggs" ng-value="j">{{j.name}}</md-option>
+        </md-select>
+    </div>
+    <md-divider/>
+
+    <div layout="column" layout-align="center center">
+        <md-card>
+            <table class="table table-bordered table-condensed">
+                <thead>
+                <th style="background-color: rgba(93,95,96,1);width: 45px;height: 40px;vertical-align:middle;text-align: center;"></th>
+                <th style="text-align: center;background-color: #5d5f60;" ng-repeat="tr in numbers">{{$index+1}}</th>
+                </thead>
+                <tr ng-repeat="tr in numbers">
+                    <td style="font-weight: 600;vertical-align: middle;text-align:center;background-color: #5d5f60;">
+                        {{$index+1}}
+                    </td>
+                    <td ng-repeat="td in tr track by $index" style="height: 40px;width:40px;vertical-align: middle;"
+                        ng-style="{backgroundColor:td.flag?'#4892bc':'#32ad52'}">
+                        <input ng-model="td.value"
+                               style="width: 40px;outline: none;text-align: center;background-color: transparent;border:none;"
+                               ng-keypress="shouldBeNumber($event)"
+                               ng-change="checkInput($parent.$index, $index)">
+                    </td>
+                </tr>
+            </table>
+            <md-card-foot layout="row" layout-align="center center">
+                <md-button ng-disabled="calFlag" class="md-button md-raised md-warn" ng-click="cal()">
+                    {{calFlag?"计算中...":"计算"}}
+                </md-button>
+                <md-button class="md-button md-primary" ng-disabled="calFlag" ng-click="changeJgg()">重置</md-button>
+            </md-card-foot>
+        </md-card>
+
+    </div>
+
+</div>
+</body>
+<script src="../assets/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../assets/node_modules/angular/angular.js"></script>
+<script src="../assets/node_modules/angular-material/angular-material.min.js"></script>
+<script src="../assets/node_modules/angular-animate/angular-animate.min.js"></script>
+<script src="../assets/node_modules/angular-messages/angular-messages.min.js"></script>
+<script src="../assets/node_modules/angular-aria/angular-aria.min.js"></script>
+<script>
+    angular.module("jggApp", ["ngMaterial"]);
+    angular.module("jggApp").controller("jggController", function ($scope, $timeout) {
+
+        $scope.defaultNumbers = [
+            "400020700",
+            "005000630",
+            "000800090",
+            "100060008",
+            "000908000",
+            "200040003",
+            "040009000",
+            "063000200",
+            "007050004"
+        ].map(function (row) {
+            return row.split("");
+        });
+
+        //九宫格列坐标显示
+        $scope.chr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        //多少种宫格
+        $scope.jggs = [{idx: 4, name: '四宫格'}, {idx: 6, name: '六宫格'}, {idx: 9, name: '九宫格'}, {idx: 16, name: '十六宫格'}];
+        //当前使用那种宫格
+        $scope.jgg = $scope.jggs[0];
+        //是否在计算九宫格结果中标志位
+        $scope.calFlag = false;
+
+        //切换其他宫格调用方法，生成对用宫格的二维数组
+        $scope.changeJgg = function () {
+            $scope.numbers = generate();
+            var no = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,";
+            $scope.no = no.substr(0, $scope.jgg.idx * 2 - 1).split(",").map(function (n) {
+                return parseInt(n);
+            });
+        };
+        /**
+         * 生成对应几宫格的二维数组
+         * */
+        function generate() {
+            var numbers = [];
+            for (var i = 0; i < $scope.jgg.idx; i++) {
+                numbers[i] = [];
+                for (var j = 0; j < $scope.jgg.idx; j++) {
+                    if ($scope.jgg.idx == 9) {
+                        numbers[i][j] =
+                            $scope.defaultNumbers[i][j] > 0
+                                ? {value: $scope.defaultNumbers[i][j], flag: true}
+                                : {flag: false};
+                    } else {
+                        numbers[i][j] = {flag: false};
+                    }
+                }
+            }
+            return numbers;
+        }
+
+
+        /**
+         * 校验输入的数字必须小于等于宫格的维数
+         * */
+        $scope.checkInput = function (row, col) {
+            if ($scope.numbers[row][col].value) {
+                $scope.numbers[row][col].flag = true;
+                if ($scope.numbers[row][col].value > $scope.jgg.idx) {
+                    $scope.numbers[row][col].value = "";
+                    $scope.numbers[row][col].flag = false;
+                }
+            } else {
+                $scope.numbers[row][col].flag = false;
+            }
+
+        };
+
+        /**
+         * 校验输入的必须是数字
+         * */
+        $scope.shouldBeNumber = function ($event, cell) {
+            if (!parseInt($event.key)) {
+                $event.preventDefault();
+            }
+        };
+
+//        var watcher = $scope.$watch("numbers", function (nv, ov) {
+//            var str = "";
+//            angular.forEach(nv, function (v) {
+//                angular.forEach(v, function (cell) {
+//                    str += (cell.value ? cell.value : "") + ",";
+//                });
+//                str += "\n";
+//            });
+//            console.log(str);
+//        }, true);
+
+        //计算九宫格应填写数字
+        $scope.cal = function () {
+//            watcher();
+            $scope.calFlag = true;
+            $timeout(function () {
+                generateLeftNumber($scope.numbers);
+                addNumber($scope.numbers);
+                $scope.calFlag = false;
+            }, 300)
+        };
+
+        $scope.changeJgg();
+
+        /**
+         * 以下为计算N宫格结果相关函数
+         **/
+
+        /**
+         * 尝试填写数字
+         * @param numbers
+         *
+         **/
+        function addNumber(numbers) {
+            //直接找是否有剩余可选数字只剩一个的格子，发现则填写并递归删除同行同列3*3格子内的数字。
+            for (var r = 0; r < numbers.length; r++) {
+                for (var c = 0; c < numbers.length; c++) {
+                    var cell = numbers[r][c];
+                    if (!cell.flag && cell.mayBeValue.length == 1) {
+                        console.log("confirm [" + r + "," + c + "]=" + cell.mayBeValue[0]);
+                        cell.value = cell.mayBeValue[0];
+                        delMayBeNumber(numbers, cell.value, r, c);
+                    }
+                }
+            }
+
+            //检测是否填写完成，如果没有则找到剩余可选数字有唯一一个可选数字是同行或同列或3*3内其他格子没有的可选数字，则填写，并触发递归删除其他可选。
+            var foundUniqueNumber = true;
+            while (foundUniqueNumber) {
+                foundUniqueNumber = false;
+                for (var r = 0; r < numbers.length; r++) {
+                    for (var c = 0; c < numbers.length; c++) {
+                        var cell = numbers[r][c];
+                        if (cell.flag)continue;
+                        for (var i = 0; i < cell.mayBeValue.length; i++) {
+                            if (checkOtherNotExistNumber(numbers, r, c, cell.mayBeValue[i])) {
+                                foundUniqueNumber = true;
+                                printMayBeNumber(numbers);
+                                cell.value = cell.mayBeValue[i];
+                                cell.mayBeValue = [];
+                                delMayBeNumber(numbers, cell.value, r, c);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            console.table(numbers.map(function (row) {
+                return row.map(function (cell) {
+                    return cell.value;
+                })
+            }));
+        }
+
+        /**
+         * @param numbers 二维九宫格数组
+         * @param row
+         * @param col
+         * @param num
+         * @return boolean
+         * */
+        function checkOtherNotExistNumber(numbers, row, col, num) {
+            console.log("checkOtherNotExistNumber:(" + row + ":" + col + ")" + num);
+
+            var found = false;
+            for (var c = 0; c < numbers.length; c++) {
+                if (!numbers[row][c].flag && c != col && numbers[row][c].mayBeValue.indexOf(num) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                console.log("←→found unique number:" + num + "@[" + row + ":" + col + "] ");
+                return true;
+            }
+            found = false;
+            for (var r = 0; r < numbers.length; r++) {
+                if (!numbers[r][col].flag && r != row && numbers[r][col].mayBeValue.indexOf(num) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                console.log("|found unique number:" + num + "@[" + row + ":" + col + "] ");
+                return true;
+            }
+
+            if (numbers.length < 9) {
+                return false;
+            }
+
+            found = false;
+            var sqrt = Math.sqrt(numbers.length);
+            var x = parseInt(row / sqrt);
+            var y = parseInt(col / sqrt);
+            console.log("sqrt[" + sqrt + "]:x=" + x + ",y=" + y);
+            for (var r = 0; r < sqrt; r++) {
+                for (var c = 0; c < sqrt; c++) {
+                    var tRow = x * sqrt + r;
+                    var tCol = y * sqrt + c;
+                    console.log("sqrt:x=" + x + ",y=" + y + ":[" + tRow + "," + tCol + "]");
+                    if (
+                        !numbers[tRow][tCol].flag
+                        && !(tRow == row && tCol == col)
+                        && numbers[tRow][tCol].mayBeValue.indexOf(num) > -1
+                    ) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                console.log("块found unique number:" + num + "@[" + row + ":" + col + "] ");
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * @numbers 九宫格二维数组
+         * @num 唯一的数字
+         * @row 唯一的数字所在行
+         * @col 唯一的数字所在列
+         *
+         * 调用此方法的前提是已发现某一个格子的可选剩余数字只剩一个了，已填写。
+         * 然后要根据填写了此数字后触发删除同行、同列以及3*3格子内此数字。
+         * 如果同行、同列以及3*3格子内发现删除此数字后又只剩一个可选数字，递归调用。
+         *
+         * */
+        function delMayBeNumber(numbers, num, row, col) {
+
+            for (var c = 0; c < numbers.length; c++) {
+                console.log("num[" + num + "," + row + ":" + col + "] ←→ 遍历 [" + row + ":" + c + "]");
+                if (numbers[row][c].flag)continue;
+                var cell = numbers[row][c];
+                var idx = cell.mayBeValue.indexOf(num);
+                if (idx > -1) {
+                    var tmpStr = cell.mayBeValue.join(",");
+                    cell.mayBeValue.splice(idx, 1);
+                    var tmpStr2 = cell.mayBeValue.join(",");
+                    console.log("num[" + num + "," + row + ":" + col + "] delete " + num + ", [" + tmpStr + "] --> [" + tmpStr2 + "]");
+                    if (cell.mayBeValue.length == 1) {
+                        console.log("num[" + num + "," + row + ":" + col + "] confirm [" + row + "," + c + "]=" + cell.mayBeValue[0]);
+                        cell.value = cell.mayBeValue[0];
+                        delMayBeNumber(numbers, cell.value, row, c);
+                    }
+                }
+            }
+
+            for (var r = 0; r < numbers.length; r++) {
+                console.log("num[" + num + "," + row + ":" + col + "] | 遍历 [" + r + ":" + col + "]");
+                if (numbers[r][col].flag)continue;
+                var cell = numbers[r][col];
+                var idx = cell.mayBeValue.indexOf(num);
+                if (idx > -1) {
+                    var tmpStr = cell.mayBeValue.join(",");
+                    cell.mayBeValue.splice(idx, 1);
+                    var tmpStr2 = cell.mayBeValue.join(",");
+                    console.log("num[" + num + "," + row + ":" + col + "] delete " + num + ", [" + tmpStr + "] --> [" + tmpStr2 + "]");
+                    if (cell.mayBeValue.length == 1) {
+                        console.log("num[" + num + "," + row + ":" + col + "] confirm [" + r + "," + col + "]=" + cell.mayBeValue[0]);
+                        cell.value = cell.mayBeValue[0];
+                        delMayBeNumber(numbers, cell.value, r, col);
+                    }
+                }
+            }
+
+            if (numbers.length < 9) {
+                console.log("num[" + num + "," + row + ":" + col + "] 低纬度宫格不做块级别筛选");
+                return;
+            }
+            var sqrt = Math.sqrt(numbers.length);
+
+            var x = parseInt(row / sqrt);
+            var y = parseInt(col / sqrt);
+            for (var r = 0; r < sqrt; r++) {
+                for (var c = 0; c < sqrt; c++) {
+                    var tRow = x * sqrt + r;
+                    var tCol = y * sqrt + c;
+                    if (numbers[tRow][tCol].flag)continue;
+
+                    console.log("num[" + num + "," + row + ":" + col + "] 块遍历 [" + tRow + ":" + tCol + "]");
+
+                    var cell = numbers[tRow][tCol];
+                    var idx = cell.mayBeValue.indexOf(num);
+                    if (idx > -1) {
+                        cell.mayBeValue.splice(idx, 1);
+                        if (cell.mayBeValue.length == 1) {
+                            console.log("confirm [" + r + "," + c + "]=" + numbers[tRow][tCol].mayBeValue[0]);
+                            cell.value = cell.mayBeValue[0];
+                            delMayBeNumber(numbers, cell.value, tRow, tCol);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        /**
+         * 根据用户已经填写的数字，生成每个格子上剩余可填写的可选数字数组
+         * 1、根据一行剩余排除
+         * 2、根据一列再次排除剩余
+         * 3、根据3*3九个格子内部再次筛除剩余数字
+         * @param numbers
+         */
+        function generateLeftNumber(numbers) {
+//            console.table(numbers);
+            generateLeftNumberByRow(numbers);
+            console.log("generateLeftNumberByRow");
+            printMayBeNumber(numbers);
+
+            generateLeftNumberByColumn(numbers);
+            console.log("generateLeftNumberByColumn");
+            printMayBeNumber(numbers);
+
+            generateLeftNumberBySquire(numbers);
+            console.log("generateLeftNumberBySquire");
+            printMayBeNumber(numbers);
+        }
+
+        function generateLeftNumberByRow(numbers) {
+            for (var row = 0; row < numbers.length; row++) {
+                var leftNumbers = $scope.no.slice();
+                for (var col = 0; col < numbers.length; col++) {
+                    if (numbers[row][col].flag) {
+                        leftNumbers.splice(leftNumbers.indexOf(parseInt(numbers[row][col].value)), 1);
+                    }
+                }
+                for (var col = 0; col < numbers.length; col++) {
+                    var cell = numbers[row][col];
+                    if (!cell.flag) {
+                        if (!cell.mayBeValue) {
+                            cell.mayBeValue = leftNumbers.slice();
+                        } else {
+                            for (var i = 0; i < cell.mayBeValue.length; i++) {
+                                if (leftNumbers.indexOf(cell.mayBeValue[i]) == -1) {
+                                    cell.mayBeValue.splice(i, 1);
+                                    i--;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function generateLeftNumberByColumn(numbers) {
+            for (var col = 0; col < numbers.length; col++) {
+                var leftNumbers = $scope.no.slice();
+                for (var row = 0; row < numbers.length; row++) {
+                    if (numbers[row][col].flag) {
+                        leftNumbers.splice(leftNumbers.indexOf(parseInt(numbers[row][col].value)), 1);
+                    }
+                }
+                for (var row = 0; row < numbers.length; row++) {
+                    var cell = numbers[row][col];
+                    if (!cell.flag) {
+                        if (!cell.mayBeValue) {
+                            cell.mayBeValue = leftNumbers.slice();
+                        } else {
+                            for (var i = 0; i < cell.mayBeValue.length; i++) {
+                                if (leftNumbers.indexOf(cell.mayBeValue[i]) == -1) {
+                                    cell.mayBeValue.splice(i, 1);
+                                    i--;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function generateLeftNumberBySquire(numbers) {
+            if (numbers.length < 9) {
+                return;
+            }
+            var sl = Math.sqrt(9);
+            for (var x = 0; x < sl; x++) {
+                for (var y = 0; y < sl; y++) {//2层块循环
+                    var hasNums = [];
+                    for (var row = 0; row < sl; row++) {//块内行列循环，生成已经存在的用户填写的数字数组
+                        for (var col = 0; col < sl; col++) {
+                            if (numbers[x * sl + row][y * sl + col].flag) {
+                                hasNums.push(parseInt(numbers[x * sl + row][y * sl + col].value));
+                            }
+                        }
+                    }
+                    for (var row = 0; row < sl; row++) {//块内行列循环，删除块内非用户填写的其他格子的块内已存在数字
+                        for (var col = 0; col < sl; col++) {
+                            var cell = numbers[x * sl + row][y * sl + col];
+                            if (!cell.flag) {
+                                if (!cell.mayBeValue) {
+                                    cell.mayBeValue = hasNums.slice();
+                                } else {
+                                    for (var i = 0; i < cell.mayBeValue.length; i++) {
+                                        if (hasNums.indexOf(cell.mayBeValue[i]) > -1) {
+                                            cell.mayBeValue.splice(i, 1);
+                                            i--;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function printMayBeNumber(numbers) {
+            console.table(numbers.map(function (row) {
+                return row.map(function (cell) {
+                    return cell.flag && ("[" + cell.value + "]") || cell.mayBeValue.join(",");
+                })
+            }));
+        }
+
+    });
+</script>
+</html>

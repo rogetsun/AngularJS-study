@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket</title>
+    <script src="../assets/node_modules/jquery/dist/jquery.js"></script>
+    <script src="../assets/jquery/jquery-websocket.js"></script>
+    <script src="../assets/node_modules/angular/angular.js"></script>
+    <script src="../assets/node_modules/angular-animate/angular-animate.js"></script>
+    <script src="../assets/node_modules/angular-aria/angular-aria.js"></script>
+    <script src="../assets/node_modules/angular-material/angular-material.js"></script>
+    <script src="../assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="../assets/node_modules/angular-material/angular-material.css">
+    <link rel="stylesheet" href="../assets/node_modules/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .span {
+            /*border: 1px solid #eee;*/
+            border-radius: 2px;
+            padding: 0 2px;
+            margin: 0 2px;
+        }
+
+        .nor {
+            background-color: #2f96b4;
+        }
+
+        .err {
+            background-color: #FF6D00;
+        }
+    </style>
+</head>
+
+<body ng-app="app" ng-controller="ctrl">
+<md-content>
+    <md-card>
+        <md-card-context layout="row">
+            <md-input-container>
+                <label>websocket server IP</label>
+                <input ng-model="ip">
+            </md-input-container>
+            <md-button ng-click="connect()" class="md-primary">connect</md-button>
+            <md-button ng-click="close()" class="md-accent">close</md-button>
+        </md-card-context>
+    </md-card>
+    <md-card>
+        <table class="table table-bordered table-condensed table-striped">
+            <tr ng-repeat="s in sensors">
+                <td style="width: 80px;">{{s.sensorObjId}}</td>
+                <td style="width: 160px;">{{s.monitorTime | date:"yyyy-MM-dd HH:mm:ss"}}</td>
+                <td style="width: 80px;">{{s.monitorValue}}</td>
+                <td>
+                    <span ng-repeat="status in s.status" class="span"
+                          ng-class="status.statusCode?'err':'nor'">{{status.statusKey+":"+status.statusCode}}</span>
+                </td>
+            </tr>
+        </table>
+    </md-card>
+</md-content>
+
+</body>
+<script>
+    angular.module("app", ["ngMaterial"])
+        .controller("ctrl", function ($scope, $filter) {
+            $scope.ip = "114.215.141.118";
+            $scope.sensors = [];
+            $scope.sensorJSON = {};
+            $scope.connect = function () {
+                $scope.ws = $.websocket("ws://" + $scope.ip + ":2224", {
+                    onopen: function (event, ws) {
+                        console.log("open");
+                    },
+                    onmessage: function (event, ws) {
+                        var m = JSON.parse(event.data);
+                        console.log(m);
+                        if (!$scope.sensorJSON[m.sensorObjId]) {
+                            var s = {sensorObjId: m.sensorObjId};
+                            $scope.sensorJSON[m.sensorObjId] = s;
+                            $scope.sensors.push(s);
+                        }
+                        console.log($scope.sensorJSON);
+                        if (m.sensorDataType == 1) { // 实时数据
+                            $scope.sensorJSON[m.sensorObjId].monitorValue = m.monitorValue;
+                            $scope.sensorJSON[m.sensorObjId].monitorTime = m.monitorTime;
+
+                        } else if (m.sensorDataType == 2) {//
+                            if (!$scope.sensorJSON[m.sensorObjId].status) {
+                                $scope.sensorJSON[m.sensorObjId].status = [];
+                                $scope.sensorJSON[m.sensorObjId].statusJSON = {};
+                            }
+                            if (!$scope.sensorJSON[m.sensorObjId].statusJSON[m.statusKey]) {
+                                $scope.sensorJSON[m.sensorObjId].statusJSON[m.statusKey] = m;
+                                $scope.sensorJSON[m.sensorObjId].status.push(m);
+                            } else {
+                                $scope.sensorJSON[m.sensorObjId].statusJSON[m.statusKey].statusCode = m.statusCode;
+                            }
+                        }
+                        $scope.$digest();
+                    },
+                    onclose: function (event) {
+                        console.log("closed:" + event);
+                    }
+                });
+            };
+
+            $scope.close = function () {
+                $scope.ws.close();
+            };
+
+            $scope.send = function (text) {
+                $scope.ws.send(text);
+            }
+        })
+</script>
+</html>
